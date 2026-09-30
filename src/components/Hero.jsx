@@ -143,14 +143,16 @@ export default function Hero() {
             <img src="/talha.jpg" alt="Talha Khondoker" className="size-20 shrink-0 rounded-full object-cover ring-2 ring-secondary ring-offset-4 ring-offset-base-200" />
             */}
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-secondary sm:text-xs">Hello, I'm</p>
-              <p className="max-w-[22rem] text-base font-extrabold leading-tight sm:text-xl">
+              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-secondary sm:text-xs">
+                Hello, I'm
+              </p>
+              <p className="max-w-[17rem] text-sm font-extrabold leading-tight sm:max-w-[22rem] sm:text-xl">
                 Md Mushfiqur Talha Khondoker
               </p>
             </div>
           </div>
 
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-4 py-1.5 text-sm">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-3 py-1.5 text-xs sm:px-4 sm:text-sm">
             <span className="relative flex size-2.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
               <span className="relative inline-flex size-2.5 rounded-full bg-success" />
@@ -158,13 +160,13 @@ export default function Hero() {
             Open to junior remote roles
           </div>
 
-          <h1 className="max-w-xl text-3xl font-extrabold leading-[1.05] tracking-tight sm:text-4xl md:text-6xl">
+          <h1 className="max-w-xl text-[2.05rem] font-extrabold leading-[1.05] tracking-tight sm:text-4xl md:text-6xl">
             I build reliable{' '}
             <span className="bg-gradient-to-r from-secondary to-info bg-clip-text text-transparent">APIs</span>{' '}
             and the interfaces on top of them.
           </h1>
 
-          <p className="my-6 max-w-md text-sm text-base-content/70 sm:text-base">
+          <p className="my-6 max-w-md text-xs text-base-content/70 sm:text-base">
             Full stack web developer working with Python, FastAPI and React. Mathematics student in
             Jashore, Bangladesh, looking for junior remote backend and full-stack roles.
           </p>
