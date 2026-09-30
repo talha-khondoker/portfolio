@@ -133,18 +133,20 @@ export default function Hero() {
       <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-20 size-80 rounded-full bg-secondary/15 blur-3xl" />
       <div aria-hidden="true" className="pointer-events-none absolute -right-24 bottom-10 size-80 rounded-full bg-info/15 blur-3xl" />
 
-      <div className="relative mx-auto grid min-h-screen max-w-6xl items-center gap-14 px-4 pb-16 pt-32 lg:grid-cols-[1.1fr_1fr]">
+      <div className="relative mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-4 pb-16 pt-24 sm:gap-10 sm:pt-28 lg:grid-cols-[1.1fr_1fr] lg:gap-14 lg:pt-32">
         <div>
-          <div className="mb-6 flex items-center gap-4">
-            <div className="grid size-20 shrink-0 place-items-center rounded-full bg-neutral text-2xl font-extrabold text-neutral-content ring-2 ring-secondary ring-offset-4 ring-offset-base-200">
+          <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <div className="grid size-14 shrink-0 place-items-center rounded-full bg-neutral text-xl font-extrabold text-neutral-content ring-2 ring-secondary ring-offset-4 ring-offset-base-200 sm:size-20 sm:text-2xl">
               TK
             </div>
             {/* When you have your photo, replace the div above with:
             <img src="/talha.jpg" alt="Talha Khondoker" className="size-20 shrink-0 rounded-full object-cover ring-2 ring-secondary ring-offset-4 ring-offset-base-200" />
             */}
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">Hello, I'm</p>
-              <p className="text-xl font-extrabold">Md Mushfiqur Talha Khondoker</p>
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-secondary sm:text-xs">Hello, I'm</p>
+              <p className="max-w-[22rem] text-base font-extrabold leading-tight sm:text-xl">
+                Md Mushfiqur Talha Khondoker
+              </p>
             </div>
           </div>
 
@@ -156,32 +158,32 @@ export default function Hero() {
             Open to junior remote roles
           </div>
 
-          <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight md:text-6xl">
+          <h1 className="max-w-xl text-3xl font-extrabold leading-[1.05] tracking-tight sm:text-4xl md:text-6xl">
             I build reliable{' '}
             <span className="bg-gradient-to-r from-secondary to-info bg-clip-text text-transparent">APIs</span>{' '}
             and the interfaces on top of them.
           </h1>
 
-          <p className="my-6 max-w-md text-base-content/70">
+          <p className="my-6 max-w-md text-sm text-base-content/70 sm:text-base">
             Full stack web developer working with Python, FastAPI and React. Mathematics student in
             Jashore, Bangladesh, looking for junior remote backend and full-stack roles.
           </p>
 
-          <div className="flex flex-wrap gap-3">
-            <a href="#projects" className="btn btn-primary gap-2 shadow-lg transition hover:-translate-y-0.5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a href="#projects" className="btn btn-primary w-full gap-2 shadow-lg transition hover:-translate-y-0.5 sm:w-auto">
               See my projects <span aria-hidden="true">→</span>
             </a>
-            <a href="#contact" className="btn btn-outline transition hover:-translate-y-0.5">
+            <a href="#contact" className="btn btn-outline w-full transition hover:-translate-y-0.5 sm:w-auto">
               Get in touch
             </a>
           </div>
 
           <dl className="mt-10 grid max-w-md grid-cols-3 divide-x divide-base-300 border-t border-base-300 pt-6">
             {stats.map((s) => (
-              <div key={s.label} className="px-4 first:pl-0">
+              <div key={s.label} className="px-2 first:pl-0 sm:px-4">
                 <dt className="sr-only">{s.label}</dt>
-                <dd className="text-2xl font-extrabold text-secondary">{s.value}</dd>
-                <p className="text-xs text-base-content/60">{s.label}</p>
+                <dd className="text-xl font-extrabold text-secondary sm:text-2xl">{s.value}</dd>
+                <p className="text-[10px] text-base-content/60 sm:text-xs">{s.label}</p>
               </div>
             ))}
           </dl>
