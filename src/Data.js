@@ -41,38 +41,39 @@ export const projects = [
     ],
     tags: ['FastAPI', 'SQLAlchemy', 'SQLite', 'React', 'JWT'],
     demo: 'https://blood-aid-assistance.netlify.app/',
-    github: 'https://github.com/talha-khondoker',
+    frontend: 'https://github.com/talha-khondoker/blood-donation-emergency-assistance-platform-frontend',
+    backend: 'https://github.com/talha-khondoker/blood-donation-emergency-assistance-platform-backend',
   },
-  {
-    title: 'FastAPI Backend Projects',
-    description:
-      'REST APIs built with FastAPI and SQLAlchemy, covering authentication, protected routes and role-based access control.',
-    points: [
-      'Built CRUD operations and protected endpoints with JWT authentication.',
-      'Worked with relational databases, request validation and API dependencies.',
-    ],
-    tags: ['FastAPI', 'Python', 'SQLAlchemy', 'MySQL', 'REST API'],
-    demo: null,
-    github: 'https://github.com/talha-khondoker',
-  },
+  // {
+  //   title: 'FastAPI Backend Projects',
+  //   description:
+  //     'REST APIs built with FastAPI and SQLAlchemy, covering authentication, protected routes and role-based access control.',
+  //   points: [
+  //     'Built CRUD operations and protected endpoints with JWT authentication.',
+  //     'Worked with relational databases, request validation and API dependencies.',
+  //   ],
+  //   tags: ['FastAPI', 'Python', 'SQLAlchemy', 'MySQL', 'REST API'],
+  //   demo: null,
+  //   github: 'https://github.com/talha-khondoker',
+  // },
 ]
 
 export const codingProfiles = [
   {
     platform: 'Codeforces',
-    href: 'https://codeforces.com/profile/YOUR_CODEFORCES_HANDLE',
+    href: 'https://codeforces.com/profile/talhakhondoker',
     value: '323+',
     text: 'problems solved, peak rating 975.',
   },
   {
     platform: 'CodeChef',
-    href: 'https://www.codechef.com/users/YOUR_CODECHEF_HANDLE',
+    href: 'https://www.codechef.com/users/talhakhondoker',
     value: '2★',
     text: 'rating 1447 across 10 rated contests.',
   },
   {
     platform: 'LeetCode',
-    href: 'https://leetcode.com/u/YOUR_LEETCODE_HANDLE',
+    href: 'https://leetcode.com/u/talhak01/',
     value: '60+',
     text: 'problems solved, mostly in C++.',
   },

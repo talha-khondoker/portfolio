@@ -39,8 +39,11 @@ export default function Projects() {
               Open live demo
             </a>
           )}
-          <a href={featured.github} target="_blank" rel="noreferrer" className="btn btn-outline">
-            View code on GitHub
+          <a href={featured.frontend} target="_blank" rel="noreferrer" className="btn btn-outline">
+            Frontend code on GitHub
+          </a>
+          <a href={featured.backend} target="_blank" rel="noreferrer" className="btn btn-outline">
+            Backend code on GitHub
           </a>
         </aside>
       </article>
