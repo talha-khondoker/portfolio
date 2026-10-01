@@ -136,12 +136,16 @@ export default function Hero() {
       <div className="relative mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-4 pb-16 pt-24 sm:gap-10 sm:pt-28 lg:grid-cols-[1.1fr_1fr] lg:gap-14 lg:pt-32">
         <div>
           <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-            <div className="grid size-14 shrink-0 place-items-center rounded-full bg-neutral text-xl font-extrabold text-neutral-content ring-2 ring-secondary ring-offset-4 ring-offset-base-200 sm:size-20 sm:text-2xl">
+            {/* <div className="grid size-14 shrink-0 place-items-center rounded-full bg-neutral text-xl font-extrabold text-neutral-content ring-2 ring-secondary ring-offset-4 ring-offset-base-200 sm:size-20 sm:text-2xl">
               TK
-            </div>
-            {/* When you have your photo, replace the div above with:
-            <img src="/talha.jpg" alt="Talha Khondoker" className="size-20 shrink-0 rounded-full object-cover ring-2 ring-secondary ring-offset-4 ring-offset-base-200" />
-            */}
+            </div> */}
+            <img
+  src="/talha-small.jpg"
+  alt="Md Mushfiqur Talha Khondoker"
+  width="80"
+  height="80"
+  className="size-20 shrink-0 rounded-full object-cover ring-2 ring-secondary ring-offset-4 ring-offset-base-200"
+/>
             <div className="min-w-0">
               <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-secondary sm:text-xs">
                 Hello, I'm
