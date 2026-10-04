@@ -1,5 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { gsap } from '../lib/gsap'
 import { skills } from '../Data'
+import SocialLinks from './SocialLinks'
+import './Hero.css'
 
 const slug = (text) => text.toLowerCase().replace(/[^a-z]+/g, '_').replace(/^_|_$/g, '')
 
@@ -15,6 +20,92 @@ function Highlighted({ text }) {
     return <span key={i}>{part}</span>
   })
 }
+
+const roles = [
+  { text: 'Full Stack Web Developer', icon: ['M12 2 2 7l10 5 10-5-10-5z', 'M2 17l10 5 10-5', 'M2 12l10 5 10-5'] },
+  {
+    text: 'Competitive Programmer',
+    icon: ['M7 4h10v5a5 5 0 0 1-10 0z', 'M17 5h3v2a3 3 0 0 1-3 3', 'M7 5H4v2a3 3 0 0 0 3 3', 'M12 14v4', 'M8 21h8'],
+  },
+  { text: 'Backend Engineer: Python & FastAPI', icon: ['M3 4h18v6H3z', 'M3 14h18v6H3z', 'M7 7h.01', 'M7 17h.01'] },
+  { text: 'Problem Solver', icon: ['M9 18h6', 'M10 21h4', 'M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z'] },
+  { text: 'Mathematics Student', icon: ['M18 4H6l7 8-7 8h12'] },
+  // { text: 'Math Tutor', icon: ['M4 5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2z', 'M4 19a2 2 0 0 0 2 2h14'] },
+]
+
+// Roles that fade in and out under the name
+function RoleSwitcher() {
+  const [i, setI] = useState(0)
+  const reduce = useReducedMotion()
+
+  useEffect(() => {
+    const t = setTimeout(() => setI((n) => (n + 1) % roles.length), 2800)
+    return () => clearTimeout(t)
+  }, [i])
+
+  const role = roles[i]
+
+  return (
+    <div className="mt-2">
+      <span className="sr-only">{roles.map((r) => r.text).join(', ')}</span>
+
+      <div aria-hidden="true" className="min-h-14 sm:min-h-8">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.p
+            key={i}
+            initial={reduce ? { opacity: 0 } : { opacity: 0, y: 14, filter: 'blur(6px)' }}
+            animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={reduce ? { opacity: 0 } : { opacity: 0, y: -14, filter: 'blur(6px)' }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="flex items-start gap-2"
+          >
+            <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-secondary to-info text-secondary-content shadow-md shadow-secondary/30">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-4"
+              >
+                {role.icon.map((d) => (
+                  <path key={d} d={d} />
+                ))}
+              </svg>
+            </span>
+            <span className="min-w-0 text-lg font-bold leading-7 hero-shine">{role.text}</span>
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      {/* Pager: tap a bar to jump to that role */}
+      <div className="mt-1 flex gap-1.5">
+        {roles.map((r, n) => (
+          <button
+            key={r.text}
+            type="button"
+            onClick={() => setI(n)}
+            aria-label={`Show: ${r.text}`}
+            className="py-2"
+          >
+            <span
+              className={`block h-1 rounded-full transition-all duration-500 ${
+                n === i ? 'w-7 bg-secondary' : 'w-2 bg-base-content/20 hover:bg-base-content/40'
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+const platforms = [
+  { name: 'Codeforces', color: 'bg-sky-400' },
+  { name: 'CodeChef', color: 'bg-amber-700' },
+  { name: 'LeetCode', color: 'bg-amber-400' },
+]
 
 function SkillsEditor() {
   const [active, setActive] = useState(0)
@@ -116,47 +207,64 @@ function SkillsEditor() {
   )
 }
 
-const stats = [
-  { value: '323+', label: 'Problems solved' },
-  { value: 'JWT', label: 'Auth and roles' },
-  { value: '3rd yr', label: 'BSc Mathematics' },
-]
-
 export default function Hero() {
+  const root = useRef(null)
+
+  // GSAP: intro animation and parallax glows
+  useLayoutEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const ctx = gsap.context(() => {
+      gsap
+        .timeline({ defaults: { ease: 'power3.out' } })
+        .from('[data-hero]', { y: 36, opacity: 0, duration: 0.9, stagger: 0.1 })
+        .from('[data-hero-editor]', { x: 70, opacity: 0, duration: 1 }, 0.25)
+
+      const scrollTrigger = {
+        trigger: root.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      }
+      gsap.to('[data-glow="a"]', { yPercent: -40, ease: 'none', scrollTrigger })
+      gsap.to('[data-glow="b"]', { yPercent: 40, ease: 'none', scrollTrigger })
+    }, root)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="home" className="relative overflow-hidden">
+    <section id="home" ref={root} className="relative overflow-hidden">
       {/* Background: dotted grid and soft glows */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 opacity-50 [background-image:radial-gradient(var(--color-base-300)_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
       />
-      <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-20 size-80 rounded-full bg-secondary/15 blur-3xl" />
-      <div aria-hidden="true" className="pointer-events-none absolute -right-24 bottom-10 size-80 rounded-full bg-info/15 blur-3xl" />
+      <div data-glow="a" aria-hidden="true" className="pointer-events-none absolute -left-24 top-20 size-80 rounded-full bg-secondary/15 blur-3xl" />
+      <div data-glow="b" aria-hidden="true" className="pointer-events-none absolute -right-24 bottom-10 size-80 rounded-full bg-info/15 blur-3xl" />
 
-      <div className="relative mx-auto grid min-h-screen max-w-6xl items-center gap-8 px-4 pb-16 pt-24 sm:gap-10 sm:pt-28 lg:grid-cols-[1.1fr_1fr] lg:gap-14 lg:pt-32">
+      <div className="relative mx-auto grid min-h-screen max-w-6xl grid-cols-1 items-center gap-14 px-4 pb-16 pt-32 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
         <div>
-          <div className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-            {/* <div className="grid size-14 shrink-0 place-items-center rounded-full bg-neutral text-xl font-extrabold text-neutral-content ring-2 ring-secondary ring-offset-4 ring-offset-base-200 sm:size-20 sm:text-2xl">
-              TK
-            </div> */}
-            <img
-  src="/talha-small.jpg"
-  alt="Md Mushfiqur Talha Khondoker"
-  width="80"
-  height="80"
-  className="size-20 shrink-0 rounded-full object-cover ring-2 ring-secondary ring-offset-4 ring-offset-base-200"
-/>
+          {/* Photo, name and designation */}
+          <div data-hero className="mb-6 flex items-center gap-5">
+            <div className="relative size-28 shrink-0 sm:size-32">
+              <span aria-hidden="true" className="hero-ring absolute -inset-1.5 rounded-full opacity-90 blur-[2px]" />
+              <img
+                src="/talha-small.jpg"
+                alt="Md Mushfiqur Talha Khondoker"
+                width="320"
+                height="320"
+                className="relative size-full rounded-full object-cover ring-4 ring-base-200"
+              />
+            </div>
             <div className="min-w-0">
-              <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-secondary sm:text-xs">
-                Hello, I'm
-              </p>
-              <p className="max-w-[17rem] text-sm font-extrabold leading-tight sm:max-w-[22rem] sm:text-xl">
-                Md Mushfiqur Talha Khondoker
-              </p>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">Hello, I'm</p>
+              <p className="text-xl font-extrabold sm:text-2xl">Md Mushfiqur Talha Khondoker</p>
+              <RoleSwitcher />
             </div>
           </div>
 
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-3 py-1.5 text-xs sm:px-4 sm:text-sm">
+          <div data-hero className="mb-5 inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-4 py-1.5 text-sm">
             <span className="relative flex size-2.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
               <span className="relative inline-flex size-2.5 rounded-full bg-success" />
@@ -164,38 +272,68 @@ export default function Hero() {
             Open to junior remote roles
           </div>
 
-          <h1 className="max-w-xl text-[2.05rem] font-extrabold leading-[1.05] tracking-tight sm:text-4xl md:text-6xl">
-            I build reliable{' '}
-            <span className="bg-gradient-to-r from-secondary to-info bg-clip-text text-transparent">APIs</span>{' '}
-            and the interfaces on top of them.
+          <h1 data-hero className="text-4xl font-extrabold leading-[1.05] tracking-tight md:text-6xl">
+            I build reliable <span className="hero-shine">APIs</span> and the interfaces on top of them.
           </h1>
 
-          <p className="my-6 max-w-md text-xs text-base-content/70 sm:text-base">
+          <p data-hero className="mb-5 mt-6 max-w-md text-base-content/70">
             Full stack web developer working with Python, FastAPI and React. Mathematics student in
             Jashore, Bangladesh, looking for junior remote backend and full-stack roles.
           </p>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <a href="#projects" className="btn btn-primary w-full gap-2 shadow-lg transition hover:-translate-y-0.5 sm:w-auto">
-              See my projects <span aria-hidden="true">→</span>
-            </a>
-            <a href="#contact" className="btn btn-outline w-full transition hover:-translate-y-0.5 sm:w-auto">
-              Get in touch
-            </a>
+          {/* Competitive programming strip */}
+          <div data-hero className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="mr-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-base-content/60">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4 text-secondary" aria-hidden="true">
+                <path d="M7 4h10v5a5 5 0 0 1-10 0z" />
+                <path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3M12 14v4M8 21h8" />
+              </svg>
+              Competitive programming
+            </span>
+            {platforms.map((p) => (
+              <span
+                key={p.name}
+                className="inline-flex items-center gap-2 rounded-full border border-base-300 bg-base-100/70 px-3 py-1 text-xs font-semibold backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-secondary hover:shadow-md hover:shadow-secondary/20"
+              >
+                <span className={`size-2 rounded-full ${p.color}`} />
+                {p.name}
+              </span>
+            ))}
           </div>
 
-          <dl className="mt-10 grid max-w-md grid-cols-3 divide-x divide-base-300 border-t border-base-300 pt-6">
-            {stats.map((s) => (
-              <div key={s.label} className="px-2 first:pl-0 sm:px-4">
-                <dt className="sr-only">{s.label}</dt>
-                <dd className="text-xl font-extrabold text-secondary sm:text-2xl">{s.value}</dd>
-                <p className="text-[10px] text-base-content/60 sm:text-xs">{s.label}</p>
-              </div>
-            ))}
-          </dl>
+          {/* Resume: view in a new tab or download, one click each */}
+          <div data-hero className="flex flex-wrap gap-3">
+            {/* <a
+              href="/Talha_Khondoker.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-primary gap-2 shadow-lg transition hover:-translate-y-0.5"
+            >
+              View Resume
+            </a> */}
+            <a
+              href="/Talha_Khondoker.pdf"
+              download="Talha_Khondoker_Resume.pdf"
+              className="btn btn-secondary gap-2 shadow-lg transition hover:-translate-y-0.5"
+            >
+              Download Resume ↓
+            </a>
+            <Link
+              to={{ pathname: '/', hash: '#projects' }}
+              className="btn btn-outline transition hover:-translate-y-0.5"
+            >
+              See my projects
+            </Link>
+          </div>
+
+          <div data-hero>
+            <SocialLinks className="mt-8" />
+          </div>
         </div>
 
-        <SkillsEditor />
+        <div data-hero-editor>
+          <SkillsEditor />
+        </div>
       </div>
     </section>
   )

@@ -1,14 +1,41 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import ThemeToggle from './ThemeToggle'
 
 const links = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', id: 'home', icon: ['M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z'] },
+  { label: 'About', id: 'about', icon: ['M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2', 'M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z'] },
+  { label: 'Skills', id: 'skills', icon: ['M12 2 2 7l10 5 10-5-10-5z', 'M2 17l10 5 10-5', 'M2 12l10 5 10-5'] },
+  { label: 'Experience', id: 'experience', icon: ['M3 7h18v13H3z', 'M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'] },
+  { label: 'Projects', id: 'projects', icon: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'] },
+  { label: 'Coding', id: 'problem-solving', icon: ['M16 18l6-6-6-6', 'M8 6l-6 6 6 6'] },
+  { label: 'Contact', id: 'contact', icon: ['M3 5h18v14H3z', 'M3 7l9 6 9-6'] },
 ]
 
+function NavIcon({ paths, className = 'size-4' }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      {paths.map((d) => (
+        <path key={d} d={d} />
+      ))}
+    </svg>
+  )
+}
+
+const to = (id) => ({ pathname: '/', hash: `#${id}` })
+
 export default function Navbar() {
+  const { pathname } = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [progress, setProgress] = useState(0)
   const [active, setActive] = useState('home')
@@ -24,6 +51,12 @@ export default function Navbar() {
     openRef.current = open
     if (open) setHidden(false)
   }, [open])
+
+  // Close the menu and show the bar on every page change
+  useEffect(() => {
+    setOpen(false)
+    setHidden(false)
+  }, [pathname])
 
   // Scroll state, progress line, hide/show direction
   useEffect(() => {
@@ -50,7 +83,7 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Mouse near the top of the screen shows the navbar (desktop and laptops)
+  // Mouse near the top of the screen shows the navbar
   useEffect(() => {
     const onMove = (e) => {
       if (e.clientY < 70) setHidden(false)
@@ -59,8 +92,12 @@ export default function Navbar() {
     return () => window.removeEventListener('mousemove', onMove)
   }, [])
 
-  // Highlight the link for the section in view
+  // Highlight the link for the section in view (home page only)
   useEffect(() => {
+    if (pathname !== '/') {
+      setActive('projects')
+      return
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -70,13 +107,13 @@ export default function Navbar() {
       { rootMargin: '-40% 0px -55% 0px' }
     )
     links.forEach((l) => {
-      const el = document.getElementById(l.href.slice(1))
+      const el = document.getElementById(l.id)
       if (el) observer.observe(el)
     })
     return () => observer.disconnect()
-  }, [])
+  }, [pathname])
 
-  // Close the mobile menu: Escape key, tap outside, or when the screen gets wide
+  // Close the mobile menu: Escape, tap outside, or when the screen gets wide
   useEffect(() => {
     const onKey = (e) => e.key === 'Escape' && setOpen(false)
     const onPointer = (e) => {
@@ -108,7 +145,6 @@ export default function Navbar() {
         hidden ? '-translate-y-[160%]' : 'translate-y-0'
       }`}
     >
-      {/* Main bar */}
       <div
         className={`navbar relative mx-auto min-h-0 max-w-5xl rounded-full border px-2 py-1.5 backdrop-blur-xl transition-all duration-300 motion-reduce:transition-none sm:px-4 ${
           scrolled
@@ -126,50 +162,65 @@ export default function Navbar() {
 
         {/* Left: brand */}
         <div className="navbar-start">
-          <a href="#home" className="group flex items-center gap-2.5 pl-1" aria-label="Talha, home">
-            <span className="grid size-9 place-items-center rounded-full bg-gradient-to-br from-secondary to-info font-extrabold text-secondary-content transition duration-300 group-hover:rotate-12 group-hover:scale-110">
-              T
+          <Link to={to('home')} className="group flex items-center gap-2.5 pl-1" aria-label="Talha, home">
+            <span className="relative grid size-9 place-items-center">
+              <span
+                aria-hidden="true"
+                className="absolute -inset-1 rounded-full bg-gradient-to-br from-secondary to-info opacity-40 blur-md transition duration-300 group-hover:opacity-80"
+              />
+              <span className="relative grid size-9 place-items-center rounded-full bg-gradient-to-br from-secondary to-info font-extrabold text-secondary-content ring-2 ring-white/30 transition duration-300 group-hover:rotate-12 group-hover:scale-110">
+                T
+              </span>
             </span>
-            {/* Phones: logo only. Tablets: name. Laptops and up: name and title */}
             <span className="hidden leading-tight sm:block">
-              <span className="block text-sm font-extrabold tracking-wide">TALHA</span>
-              <span className="hidden text-xs text-base-content/60 lg:block">Full Stack Developer</span>
+              <span className="block text-sm font-extrabold tracking-[0.2em]">TALHA</span>
+              <span className="hidden bg-gradient-to-r from-secondary to-info bg-clip-text text-xs font-semibold text-transparent lg:block">
+                Full Stack Developer
+              </span>
             </span>
-          </a>
+          </Link>
         </div>
 
-        {/* Center: links (tablet and up) */}
+        {/* Center: links (tablet and up), with a sliding highlight */}
         <nav className="navbar-center hidden md:flex" aria-label="Main">
-          <ul className="flex items-center gap-0.5 rounded-full bg-base-200/60 p-1 text-sm lg:gap-1">
+          <ul className="flex items-center gap-0.5 rounded-full border border-base-content/10 bg-base-200/60 p-1 text-sm">
             {links.map((l) => {
-              const isActive = active === l.href.slice(1)
+              const isActive = active === l.id
               return (
-                <li key={l.href}>
-                  <a
-                    href={l.href}
+                <li key={l.id}>
+                  <Link
+                    to={to(l.id)}
                     aria-current={isActive ? 'true' : undefined}
-                    className={`block rounded-full px-3 py-1.5 font-medium transition duration-300 lg:px-4 ${
-                      isActive
-                        ? 'bg-secondary text-secondary-content shadow'
-                        : 'text-base-content/70 hover:bg-base-100 hover:text-base-content'
+                    className={`relative flex items-center gap-1.5 rounded-full px-3 py-1.5 font-medium transition-colors duration-300 ${
+                      isActive ? 'text-secondary-content' : 'text-base-content/70 hover:text-base-content'
                     }`}
                   >
-                    {l.label}
-                  </a>
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        transition={{ type: 'spring', stiffness: 450, damping: 34 }}
+                        className="absolute inset-0 rounded-full bg-gradient-to-r from-secondary to-info shadow-lg shadow-secondary/30"
+                      />
+                    )}
+                    <NavIcon paths={l.icon} className="relative hidden size-3.5 xl:block" />
+                    <span className="relative">{l.label}</span>
+                  </Link>
                 </li>
               )
             })}
           </ul>
         </nav>
 
-        {/* Right: call to action and menu button */}
-        <div className="navbar-end gap-1.5">
-          <a
-            href="#contact"
-            className="btn btn-secondary btn-sm hidden gap-1 rounded-full shadow-md transition duration-300 hover:-translate-y-0.5 hover:shadow-lg sm:inline-flex"
+        {/* Right: theme toggle, call to action (laptops) and menu button (phones) */}
+        <div className="navbar-end gap-2">
+          <ThemeToggle />
+
+          <Link
+            to={to('contact')}
+            className="btn btn-sm hidden gap-1 rounded-full border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-secondary/40 lg:inline-flex"
           >
             Let&apos;s Talk <span aria-hidden="true">→</span>
-          </a>
+          </Link>
 
           <button
             type="button"
@@ -200,36 +251,45 @@ export default function Navbar() {
           open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'
         }`}
       >
-        <ul className="grid gap-1">
-          {links.map((l) => {
-            const isActive = active === l.href.slice(1)
+        <ul className="grid grid-cols-2 gap-1.5">
+          {links.map((l, i) => {
+            const isActive = active === l.id
             return (
-              <li key={l.href}>
-                <a
-                  href={l.href}
+              <li
+                key={l.id}
+                className={`transition duration-300 ${open ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+                style={{ transitionDelay: open ? `${i * 35}ms` : '0ms' }}
+              >
+                <Link
+                  to={to(l.id)}
                   onClick={() => setOpen(false)}
                   aria-current={isActive ? 'true' : undefined}
-                  className={`flex min-h-11 items-center justify-between rounded-xl px-4 font-medium transition ${
+                  className={`flex min-h-12 items-center gap-2.5 rounded-xl px-3 font-medium transition ${
                     isActive
-                      ? 'bg-secondary text-secondary-content'
-                      : 'hover:bg-base-200 active:bg-base-200'
+                      ? 'bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30'
+                      : 'bg-base-200/50 hover:bg-base-200 active:bg-base-200'
                   }`}
                 >
+                  <NavIcon paths={l.icon} className="size-4.5 shrink-0" />
                   {l.label}
-                  {isActive && <span aria-hidden="true">●</span>}
-                </a>
+                </Link>
               </li>
             )
           })}
         </ul>
 
-        <a
-          href="#contact"
+        <div className="mt-2 flex items-center justify-between rounded-xl bg-base-200/60 px-4 py-2">
+          <span className="text-sm font-medium">Theme</span>
+          <ThemeToggle />
+        </div>
+
+        <Link
+          to={to('contact')}
           onClick={() => setOpen(false)}
-          className="btn btn-secondary mt-2 w-full gap-1 rounded-xl"
+          className="btn mt-2 w-full gap-1 rounded-xl border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30"
         >
           Let&apos;s Talk <span aria-hidden="true">→</span>
-        </a>
+        </Link>
       </div>
     </header>
   )

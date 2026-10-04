@@ -1,0 +1,57 @@
+@keyframes ft-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes ft-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ft-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -24px) scale(1.15); }
+  66% { transform: translate(-30px, 20px) scale(0.92); }
+}
+
+/* Endless skills ribbon */
+.ft-marquee {
+  animation: ft-marquee 40s linear infinite;
+}
+
+/* Spinning gradient used for the call-to-action border */
+.ft-spin {
+  background: conic-gradient(
+    from 0deg,
+    var(--color-secondary),
+    var(--color-info),
+    var(--color-accent),
+    var(--color-secondary)
+  );
+  animation: ft-spin 7s linear infinite;
+}
+
+/* Slowly drifting colour blobs */
+.ft-blob {
+  animation: ft-drift 16s ease-in-out infinite;
+}
+
+/* Outlined giant name */
+.ft-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in oklab, var(--color-secondary) 45%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-marquee {
+    animation-duration: 120s;
+  }
+  .ft-spin {
+    animation-duration: 28s;
+  }
+  .ft-blob {
+    animation: none;
+  }
+}

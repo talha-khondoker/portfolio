@@ -1,77 +1,53 @@
+import { Link } from 'react-router-dom'
 import { projects } from '../Data'
+import ProjectCard from './ProjectCard'
+import Reveal from './Reveal'
 
-function Tags({ tags }) {
-  return (
-    <div className="my-4 flex flex-wrap gap-2">
-      {tags.map((tag) => (
-        <span key={tag} className="rounded-full border border-base-300 px-3 py-0.5 text-sm text-base-content/70">
-          {tag}
-        </span>
-      ))}
-    </div>
-  )
-}
+// How many projects the home page shows. The rest live on /projects.
+const LIMIT = 6
 
 export default function Projects() {
-  const [featured, ...others] = projects
+  const visible = projects.slice(0, LIMIT)
+  const hidden = projects.length - visible.length
 
   return (
-    <section id="projects" className="mx-auto max-w-6xl border-t border-base-300 px-4 py-16">
-      <h2 className="mb-8 text-3xl font-extrabold md:text-4xl">Projects</h2>
+    <section id="projects" className="relative mx-auto max-w-6xl border-t border-base-300 px-4 py-16">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <span className="absolute -right-24 top-24 size-80 rounded-full bg-secondary/10 blur-3xl" />
+        <span className="absolute -left-24 bottom-24 size-80 rounded-full bg-info/10 blur-3xl" />
+      </div>
 
-      {/* Featured project: red stripe on the left */}
-      <article className="grid gap-8 rounded-md border border-l-8 border-base-300 border-l-accent bg-base-100 p-6 md:p-8 lg:grid-cols-[1.3fr_1fr]">
+      <Reveal className="relative mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h3 className="mb-3 text-2xl font-extrabold md:text-3xl">{featured.title}</h3>
-          <p className="text-base-content/80">{featured.description}</p>
-          <ul className="mt-4 list-disc space-y-1 pl-5 text-base-content/70">
-            {featured.points.map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">My work</p>
+          <h2 className="mt-2 text-3xl font-extrabold md:text-4xl">
+            Featured{' '}
+            <span className="bg-gradient-to-r from-secondary to-info bg-clip-text text-transparent">projects</span>
+          </h2>
         </div>
+        <span className="rounded-full border border-base-300 bg-base-100/80 px-4 py-1.5 text-sm font-semibold backdrop-blur">
+          {projects.length} {projects.length === 1 ? 'project' : 'projects'}
+        </span>
+      </Reveal>
 
-        <aside className="flex flex-col justify-center gap-2 border-t border-base-300 pt-6 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-          <small className="text-base-content/60">Built with</small>
-          <Tags tags={featured.tags} />
-          {featured.demo && (
-            <a href={featured.demo} target="_blank" rel="noreferrer" className="btn btn-primary">
-              Open live demo
-            </a>
-          )}
-          <a href={featured.frontend} target="_blank" rel="noreferrer" className="btn btn-outline">
-            Frontend code on GitHub
-          </a>
-          <a href={featured.backend} target="_blank" rel="noreferrer" className="btn btn-outline">
-            Backend code on GitHub
-          </a>
-        </aside>
-      </article>
+      <div className="relative grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {visible.map((project, i) => (
+          <ProjectCard key={project.slug} project={project} index={i} delay={(i % 3) * 0.1} />
+        ))}
+      </div>
 
-      {/* Other projects: same style, teal stripe */}
-      {others.length > 0 && (
-        <div className="mt-6 grid gap-6 md:grid-cols-2">
-          {others.map((project) => (
-            <article
-              key={project.title}
-              className="rounded-md border border-l-8 border-base-300 border-l-secondary bg-base-100 p-6"
-            >
-              <h3 className="mb-2 text-xl font-extrabold">{project.title}</h3>
-              <p className="text-base-content/70">{project.description}</p>
-              <Tags tags={project.tags} />
-              <div className="flex flex-wrap gap-2">
-                {project.demo && (
-                  <a href={project.demo} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm">
-                    Live demo
-                  </a>
-                )}
-                <a href={project.github} target="_blank" rel="noreferrer" className="btn btn-outline btn-sm">
-                  GitHub
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
+      {hidden > 0 && (
+        <Reveal className="relative mt-12 text-center">
+          <p className="mb-4 text-sm text-base-content/70">
+            Showing {visible.length} of {projects.length} projects
+          </p>
+          <Link
+            to="/projects"
+            className="btn gap-2 rounded-full border-0 bg-gradient-to-r from-secondary to-info px-8 text-secondary-content shadow-lg shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-secondary/40"
+          >
+            View all {projects.length} projects <span aria-hidden="true">→</span>
+          </Link>
+        </Reveal>
       )}
     </section>
   )

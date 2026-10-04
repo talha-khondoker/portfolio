@@ -1,3 +1,21 @@
+export const contactInfo = {
+  email: 'khondokertalha@gmail.com',
+  phone: '+880 1867-051845',
+  phoneHref: 'tel:+8801867051845',
+  whatsapp: '+880 1867-051845',
+  whatsappHref: 'https://wa.me/8801867051845',
+}
+
+export const socials = [
+  { label: 'GitHub', href: 'https://github.com/talha-khondoker' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/talha-khondoker' },
+  { label: 'Facebook', href: 'https://www.facebook.com/talhakhondoker11/' },
+  { label: 'WhatsApp', href: 'https://wa.me/8801867051845' },
+  { label: 'Email', href: 'mailto:khondokertalha@gmail.com' },
+  { label: 'X', href: 'https://x.com/khondoker_talha' },
+]
+
+// Used by the hero code editor
 export const skills = [
   {
     group: 'Languages',
@@ -28,52 +46,154 @@ export const skills = [
   },
 ]
 
-export const projects = [
+// Used by the graphical Skills section. Set the levels honestly.
+export const skillLevels = [
   {
-    title: 'Blood Donation & Emergency Assistance Platform',
-    description:
-      'A full-stack platform that connects people who need blood with donors, with separate tools for users, donors and administrators.',
-    points: [
-      'Implemented JWT authentication with signup, login, token refresh, password reset and protected routes.',
-      'Built role-based features for normal users, donors and administrators, including admin dashboards.',
-      'Created CRUD workflows for blood requests, donor responses, user management and request status.',
-      'Added search, filtering, sorting and pagination for users, donors and blood requests.',
+    group: 'Frontend',
+    items: [
+      { name: 'React', level: 75 },
+      { name: 'JavaScript', level: 80 },
+      { name: 'HTML', level: 90 },
+      { name: 'Tailwind CSS and DaisyUI', level: 80 },
     ],
-    tags: ['FastAPI', 'SQLAlchemy', 'SQLite', 'React', 'JWT'],
-    demo: 'https://blood-aid-assistance.netlify.app/',
-    frontend: 'https://github.com/talha-khondoker/blood-donation-emergency-assistance-platform-frontend',
-    backend: 'https://github.com/talha-khondoker/blood-donation-emergency-assistance-platform-backend',
   },
-  // {
-  //   title: 'FastAPI Backend Projects',
-  //   description:
-  //     'REST APIs built with FastAPI and SQLAlchemy, covering authentication, protected routes and role-based access control.',
-  //   points: [
-  //     'Built CRUD operations and protected endpoints with JWT authentication.',
-  //     'Worked with relational databases, request validation and API dependencies.',
-  //   ],
-  //   tags: ['FastAPI', 'Python', 'SQLAlchemy', 'MySQL', 'REST API'],
-  //   demo: null,
-  //   github: 'https://github.com/talha-khondoker',
-  // },
+  {
+    group: 'Backend',
+    items: [
+      { name: 'Python', level: 85 },
+      { name: 'FastAPI', level: 80 },
+      { name: 'REST APIs', level: 80 },
+      { name: 'JWT and role-based access', level: 75 },
+    ],
+  },
+  {
+    group: 'Databases',
+    items: [
+      { name: 'MySQL', level: 70 },
+      { name: 'SQLAlchemy', level: 75 },
+      { name: 'SQLite', level: 75 },
+      { name: 'Supabase', level: 55 },
+    ],
+  },
+  {
+    group: 'Programming and CS',
+    items: [
+      { name: 'C++', level: 80 },
+      { name: 'C', level: 70 },
+      { name: 'Data structures and algorithms', level: 75 },
+    ],
+  },
+  {
+    group: 'Tools',
+    items: [
+      { name: 'Git and GitHub', level: 75 },
+      { name: 'Docker', level: 55 },
+      { name: 'Render and Netlify', level: 70 },
+    ],
+  },
 ]
 
+export const experience = [
+  {
+    role: 'Private Tutor',
+    place: 'Jashore, Bangladesh',
+    period: 'Ongoing', // add your start date, for example "2022 to present"
+    points: [
+      'Teach mathematics and SSC-level subjects to school students.',
+      'Break difficult topics into simple steps and explain them clearly.',
+    ],
+  },
+]
+
+export const projects = [
+  {
+    slug: 'blood-donation-platform',
+    title: 'Blood Donation & Emergency Assistance Platform',
+    image: '/projects/blood-aid.png',
+    summary:
+      'A full-stack platform that connects people who need blood with donors, with separate tools for users, donors and administrators.',
+    description:
+      'Users can post blood requests, donors can respond to them, and administrators can manage users and request status from a dashboard. The backend is a FastAPI REST API with JWT authentication and role-based access, and the frontend is built in React.',
+    stack: ['FastAPI', 'SQLAlchemy', 'SQLite', 'React', 'JWT'],
+    live: 'https://blood-aid-assistance.netlify.app/',
+    github: 'https://github.com/talha-khondoker',
+    challenges: [
+      'Designing role-based access so users, donors and admins each see only what they should.',
+      'Keeping logins smooth with token refresh, password reset and protected routes.',
+      'Combining search, filtering, sorting and pagination without confusing results.',
+    ],
+    improvements: [
+      'Email or SMS alerts when a matching donor is found.',
+      'Location-based donor matching.',
+      'Move from SQLite to PostgreSQL for production use.',
+      'Add automated tests and Docker deployment.',
+    ],
+  },
+  {
+    slug: 'library-management-api',
+    title: 'Library Management System API',
+    image: '/projects/library-api.png',
+    summary:
+      'A REST API for managing books, members and library records, built with FastAPI and SQLAlchemy.',
+    description:
+      'A backend service that handles library data through clean REST endpoints, with request validation and a relational database. It includes interactive API documentation generated by FastAPI.',
+    stack: ['FastAPI', 'SQLAlchemy', 'SQLite', 'Python', 'REST API'],
+    live: null, // deploy on Render and add the /docs link here
+    github: 'https://github.com/talha-khondoker/library-management-api',
+    challenges: [
+      'Modelling the relationships between books, members and borrowing records.',
+      'Validating requests and returning clear, consistent error messages.',
+      'Structuring routes, schemas and database code so the project stays easy to maintain.',
+    ],
+    improvements: [
+      'JWT authentication with admin and member roles.',
+      'Fines, due dates and overdue reminders.',
+      'A React frontend for librarians and members.',
+      'Tests, Docker and deployment on Render.',
+    ],
+  },
+  {
+    slug: 'portfolio-website',
+    title: 'Personal Portfolio Website',
+    image: '/projects/portfolio.png',
+    summary:
+      'This responsive portfolio, built with React and DaisyUI, with every section driven by one data file.',
+    description:
+      'A single-page portfolio with a floating navbar, an animated code-editor skills card, graphical skills, project detail pages, smooth scrolling, a dark and light theme, and a contact section. All content lives in one data file, so adding a project is a small edit.',
+    stack: ['React', 'Vite', 'Tailwind CSS', 'DaisyUI', 'GSAP', 'Framer Motion', 'Lenis', 'React Router'],
+    live: 'https://talha-khondoker-portfolio.netlify.app/',
+    github: 'https://github.com/talha-khondoker/portfolio',
+    challenges: [
+      'Making the layout and navbar work well from small phones to large desktops.',
+      'Combining smooth scrolling (Lenis), scroll animations (GSAP) and reveals (Framer Motion) without conflicts.',
+      'Keeping content in one data file while still giving each project its own page.',
+    ],
+    improvements: [
+      'A contact form that sends messages without opening an email app.',
+      'A blog section for what I learn.',
+      'Project filtering by technology.',
+      'Automated tests and performance tuning.',
+    ],
+  },
+]
+
+// Keep YOUR real handles here (replace the YOUR_..._HANDLE parts)
 export const codingProfiles = [
   {
     platform: 'Codeforces',
-    href: 'https://codeforces.com/profile/talhakhondoker',
+    href: 'https://codeforces.com/profile/YOUR_CODEFORCES_HANDLE',
     value: '323+',
     text: 'problems solved, peak rating 975.',
   },
   {
     platform: 'CodeChef',
-    href: 'https://www.codechef.com/users/talhakhondoker',
+    href: 'https://www.codechef.com/users/YOUR_CODECHEF_HANDLE',
     value: '2★',
     text: 'rating 1447 across 10 rated contests.',
   },
   {
     platform: 'LeetCode',
-    href: 'https://leetcode.com/u/talhak01/',
+    href: 'https://leetcode.com/u/YOUR_LEETCODE_HANDLE',
     value: '60+',
     text: 'problems solved, mostly in C++.',
   },

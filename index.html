@@ -27,6 +27,17 @@
     <meta property="og:image" content="https://talha-khondoker-portfolio.netlify.app/talha.jpg" />
     <meta property="og:url" content="https://talha-khondoker-portfolio.netlify.app/" />
     <meta name="twitter:card" content="summary" />
+
+    <!-- Apply the saved theme before the page paints (no flash) -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'portfolio-dark' : 'portfolio-light';
+          document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -1,0 +1,65 @@
+/* Skills solar system. Everything here spins forever. */
+
+@keyframes sk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sk-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Ring spins, icon counter-spins so logos stay upright */
+.sk-ring {
+  animation: sk-spin var(--sk-duration) linear infinite;
+  animation-direction: var(--sk-dir);
+}
+
+.sk-chip {
+  animation: sk-spin var(--sk-duration) linear infinite;
+  animation-direction: var(--sk-dir-inv);
+}
+
+/* Slow glowing halo behind the sun */
+.sk-halo {
+  background: conic-gradient(
+    from 0deg,
+    var(--color-secondary),
+    var(--color-info),
+    var(--color-accent),
+    var(--color-secondary)
+  );
+  animation: sk-spin 8s linear infinite;
+}
+
+/* Soft colour wash behind the whole system */
+.sk-aura {
+  background:
+    radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-secondary) 22%, transparent), transparent 60%),
+    radial-gradient(circle at 75% 25%, color-mix(in oklab, var(--color-info) 16%, transparent), transparent 45%);
+}
+
+/* Glass chip with a gradient edge */
+.sk-edge {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-info), var(--color-accent));
+}
+
+.sk-caption {
+  animation: sk-float 4s ease-in-out infinite;
+}
+
+/* Keep it moving for everyone, just calmer when reduced motion is on */
+@media (prefers-reduced-motion: reduce) {
+  .sk-ring,
+  .sk-chip {
+    animation-duration: calc(var(--sk-duration) * 3);
+  }
+  .sk-halo {
+    animation-duration: 24s;
+  }
+  .sk-caption {
+    animation: none;
+  }
+}

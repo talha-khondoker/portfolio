@@ -1,0 +1,26 @@
+/* Skill icon tiles: gentle, endless floating */
+@keyframes skc-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.skc-float {
+  animation: skc-bob 5s ease-in-out infinite;
+}
+
+/* Gradient hairline along the top of each card */
+.skc-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 1.5rem auto 1.5rem;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, var(--color-secondary), var(--color-info), transparent);
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skc-float {
+    animation: none;
+  }
+}

@@ -1,0 +1,14 @@
+@keyframes ab-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.ab-float {
+  animation: ab-float 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-float {
+    animation: none;
+  }
+}
