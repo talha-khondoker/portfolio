@@ -11,8 +11,18 @@
   50% { transform: translateY(-6px); }
 }
 
-/* Ring spins, icon counter-spins so logos stay upright */
+@keyframes sk-shoot {
+  0% { transform: translate(0, 0) rotate(35deg); opacity: 0; }
+  8% { opacity: 1; }
+  30%, 100% { transform: translate(180px, 126px) rotate(35deg); opacity: 0; }
+}
+
+/* Each ring has its own colour in --ring. The ring spins, icons counter-spin so logos stay upright. */
 .sk-ring {
+  border: 1px solid color-mix(in oklab, var(--ring) 38%, transparent);
+  box-shadow:
+    0 0 26px -8px color-mix(in oklab, var(--ring) 60%, transparent),
+    inset 0 0 26px -12px color-mix(in oklab, var(--ring) 55%, transparent);
   animation: sk-spin var(--sk-duration) linear infinite;
   animation-direction: var(--sk-dir);
 }
@@ -20,6 +30,16 @@
 .sk-chip {
   animation: sk-spin var(--sk-duration) linear infinite;
   animation-direction: var(--sk-dir-inv);
+}
+
+/* Glowing coloured edge around every icon */
+.sk-edge {
+  background: linear-gradient(135deg, var(--ring), color-mix(in oklab, var(--ring) 35%, white));
+  box-shadow: 0 8px 22px -6px color-mix(in oklab, var(--ring) 70%, transparent);
+}
+
+.sk-edge:hover {
+  box-shadow: 0 10px 30px -4px color-mix(in oklab, var(--ring) 90%, transparent);
 }
 
 /* Slow glowing halo behind the sun */
@@ -38,12 +58,19 @@
 .sk-aura {
   background:
     radial-gradient(circle at 50% 50%, color-mix(in oklab, var(--color-secondary) 22%, transparent), transparent 60%),
-    radial-gradient(circle at 75% 25%, color-mix(in oklab, var(--color-info) 16%, transparent), transparent 45%);
+    radial-gradient(circle at 75% 25%, color-mix(in oklab, var(--color-info) 16%, transparent), transparent 45%),
+    radial-gradient(circle at 25% 80%, color-mix(in oklab, var(--color-accent) 14%, transparent), transparent 45%);
 }
 
-/* Glass chip with a gradient edge */
-.sk-edge {
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-info), var(--color-accent));
+/* Shooting stars */
+.sk-shoot {
+  position: absolute;
+  width: 70px;
+  height: 2px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, transparent, var(--color-secondary), white);
+  opacity: 0;
+  animation: sk-shoot 7s ease-in infinite;
 }
 
 .sk-caption {
@@ -61,5 +88,8 @@
   }
   .sk-caption {
     animation: none;
+  }
+  .sk-shoot {
+    display: none;
   }
 }

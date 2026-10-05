@@ -13,6 +13,7 @@ const links = [
   { label: 'Projects', id: 'projects' },
   { label: 'Coding', id: 'problem-solving' },
   { label: 'Contact', id: 'contact' },
+  { label: 'Resume', to: '/resume' },
 ]
 
 const ribbon = [
@@ -236,9 +237,9 @@ export default function Footer() {
               <h3 className="text-sm font-extrabold uppercase tracking-[0.2em] text-secondary">Explore</h3>
               <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-sm md:grid-cols-1">
                 {links.map((l) => (
-                  <li key={l.id}>
+                  <li key={l.id ?? l.to}>
                     <Link
-                      to={to(l.id)}
+                      to={l.to ?? to(l.id)}
                       className="group inline-flex items-center gap-2 text-base-content/70 transition duration-300 hover:translate-x-1 hover:text-secondary"
                     >
                       <span className="h-px w-0 bg-secondary transition-all duration-300 group-hover:w-4" />

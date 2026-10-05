@@ -78,7 +78,7 @@ function Tile({ tile, index }) {
       style={{ animationDelay: `${(index % 6) * 0.4}s` }}
     >
       <div className="skc-float grid place-items-center" style={{ animationDelay: `${(index % 6) * 0.45}s` }}>
-        <span className="grid size-14 place-items-center rounded-2xl bg-white p-3 shadow-md ring-1 ring-black/5 transition duration-300 group-hover/tile:-translate-y-1.5 group-hover/tile:rotate-6 group-hover/tile:scale-110 group-hover/tile:shadow-xl group-hover/tile:shadow-secondary/40 group-focus-visible/tile:ring-2 group-focus-visible/tile:ring-secondary sm:size-16">
+        <span className="grid size-14 place-items-center rounded-2xl bg-white p-3 shadow-md ring-1 ring-black/5 transition duration-300 group-hover/tile:-translate-y-1.5 group-hover/tile:rotate-6 group-hover/tile:scale-110 group-hover/tile:shadow-[0_14px_30px_-8px_var(--acc)] group-focus-visible/tile:ring-2 group-focus-visible/tile:ring-secondary sm:size-16">
           {showGlyph ? (
             <svg
               viewBox="0 0 24 24"
@@ -87,7 +87,7 @@ function Tile({ tile, index }) {
               strokeWidth="1.8"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="size-full text-secondary"
+              className="size-full text-[color:var(--acc)]"
               aria-hidden="true"
             >
               {tile.glyph ? glyphs[tile.glyph] : glyphs.api}
@@ -113,40 +113,87 @@ function Tile({ tile, index }) {
   )
 }
 
+// Every card gets its own accent colour
+const accents = ['var(--color-secondary)', 'var(--color-info)', 'var(--color-accent)', 'var(--color-success)']
+
 export default function Skills() {
+  const groups = skillLevels.map((group) => ({
+    ...group,
+    tiles: group.items.flatMap((item) => iconMap[item.name] || [{ name: item.name, glyph: 'api' }]),
+  }))
+  const total = groups.reduce((sum, g) => sum + g.tiles.length, 0)
+
+  const spotlight = (e) => {
+    if (e.pointerType !== 'mouse') return
+    const r = e.currentTarget.getBoundingClientRect()
+    e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`)
+    e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`)
+  }
+
   return (
-    <section id="skills" className="mx-auto max-w-6xl border-t border-base-300 px-4 py-16">
-      <Reveal>
-        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">What I work with</p>
-        <h2 className="mb-10 mt-2 text-3xl font-extrabold md:text-4xl">Skills &amp; Technologies</h2>
+    <section id="skills" className="relative mx-auto max-w-6xl border-t border-base-300 px-4 py-16">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <span className="absolute -left-24 top-20 size-80 rounded-full bg-secondary/10 blur-3xl" />
+        <span className="absolute -right-24 top-[45%] size-80 rounded-full bg-info/10 blur-3xl" />
+        <span className="absolute -bottom-10 left-1/3 size-72 rounded-full bg-accent/10 blur-3xl" />
+      </div>
+
+      <Reveal className="relative mb-12 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">What I work with</p>
+          <h2 className="mt-2 text-3xl font-extrabold md:text-4xl">
+            Skills &amp;{' '}
+            <span className="bg-gradient-to-r from-secondary to-info bg-clip-text text-transparent">Technologies</span>
+          </h2>
+          <p className="mt-3 max-w-lg text-base-content/70">
+            The tools I use to build, ship and solve problems, from backend APIs to the interfaces on top.
+          </p>
+        </div>
+        <span className="rounded-full border border-base-300 bg-base-100/80 px-4 py-1.5 text-sm font-semibold backdrop-blur">
+          {total} technologies &middot; {groups.length} areas
+        </span>
       </Reveal>
 
       <SkillsOrbit />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {skillLevels.map((group, i) => {
-          const tiles = group.items.flatMap((item) => iconMap[item.name] || [{ name: item.name, glyph: 'api' }])
+      <div className="relative grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {groups.map((group, i) => {
+          const acc = accents[i % accents.length]
           return (
             <Reveal
               as="article"
               key={group.group}
               delay={(i % 3) * 0.1}
-              className="skc-card group relative rounded-2xl border border-base-300 bg-base-100/70 p-6 backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-secondary hover:shadow-2xl hover:shadow-secondary/10"
+              onPointerMove={spotlight}
+              style={{ '--acc': acc }}
+              className="skc-card group relative rounded-2xl border border-base-300 bg-base-100/70 p-6 backdrop-blur transition duration-300 hover:-translate-y-1.5"
             >
               {/* Corner glow */}
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-                <span className="absolute -right-12 -top-12 size-40 rounded-full bg-secondary/15 blur-3xl transition duration-500 group-hover:bg-info/25" />
+                <span
+                  className="absolute -right-12 -top-12 size-40 rounded-full opacity-20 blur-3xl transition duration-500 group-hover:opacity-50"
+                  style={{ background: acc }}
+                />
               </div>
 
               <div className="relative mb-8 flex items-center gap-3">
-                <span className="grid size-11 place-items-center rounded-xl bg-gradient-to-br from-secondary to-info font-mono text-sm font-extrabold text-secondary-content shadow-lg shadow-secondary/30">
+                <span
+                  className="grid size-11 shrink-0 place-items-center rounded-xl font-mono text-sm font-extrabold text-white transition duration-300 group-hover:rotate-6 group-hover:scale-110"
+                  style={{
+                    background: `linear-gradient(135deg, ${acc}, color-mix(in oklab, ${acc} 55%, var(--color-accent)))`,
+                    boxShadow: `0 10px 22px -8px ${acc}`,
+                  }}
+                >
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <h3 className="text-lg font-extrabold">{group.group}</h3>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-lg font-extrabold leading-tight">{group.group}</h3>
+                  <p className="text-xs text-base-content/60">{group.tiles.length} skills</p>
+                </div>
               </div>
 
               <ul className="relative grid grid-cols-3 gap-x-3 gap-y-7 sm:grid-cols-4">
-                {tiles.map((tile, n) => (
+                {group.tiles.map((tile, n) => (
                   <Tile key={tile.name} tile={tile} index={n} />
                 ))}
               </ul>

@@ -1,12 +1,13 @@
 import { motion, useReducedMotion } from 'framer-motion'
 
 // Fades and slides content up once, when it scrolls into view
-export default function Reveal({ as = 'div', children, delay = 0, y = 28, className = '' }) {
+export default function Reveal({ as = 'div', children, delay = 0, y = 28, className = '', ...rest }) {
   const reduce = useReducedMotion()
   const Component = motion[as]
 
   return (
     <Component
+      {...rest}
       className={className}
       initial={reduce ? false : { opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}

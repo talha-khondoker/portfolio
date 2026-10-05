@@ -1,0 +1,39 @@
+/* Print: show only the CV, on a plain white A4 page */
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  body:has(.resume-paper) {
+    background: #fff !important;
+  }
+
+  body:has(.resume-paper) header,
+  body:has(.resume-paper) footer,
+  body:has(.resume-paper) button[aria-label='Back to top'],
+  .no-print {
+    display: none !important;
+  }
+
+  .resume-page {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .resume-frame {
+    padding: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  .resume-paper {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

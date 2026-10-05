@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import ThemeToggle from './ThemeToggle'
+import SocialLinks from './SocialLinks'
+import './Navbar.css'
 
 const links = [
   { label: 'Home', id: 'home', icon: ['M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z'] },
@@ -41,6 +43,7 @@ export default function Navbar() {
   const [active, setActive] = useState('home')
   const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
+  const [hover, setHover] = useState(null)
 
   const headerRef = useRef(null)
   const lastY = useRef(0)
@@ -95,7 +98,7 @@ export default function Navbar() {
   // Highlight the link for the section in view (home page only)
   useEffect(() => {
     if (pathname !== '/') {
-      setActive('projects')
+      setActive(pathname.startsWith('/projects') ? 'projects' : '')
       return
     }
     const observer = new IntersectionObserver(
@@ -132,6 +135,11 @@ export default function Navbar() {
     }
   }, [])
 
+  const current =
+    pathname === '/resume'
+      ? { id: 'resume', label: 'Resume', icon: ['M6 3h8l4 4v14H6z', 'M14 3v4h4M9 12h6M9 16h6'] }
+      : links.find((l) => l.id === active) ?? links[0]
+
   return (
     <header
       ref={headerRef}
@@ -146,17 +154,27 @@ export default function Navbar() {
       }`}
     >
       <div
-        className={`navbar relative mx-auto min-h-0 max-w-5xl rounded-full border px-2 py-1.5 backdrop-blur-xl transition-all duration-300 motion-reduce:transition-none sm:px-4 ${
+        className={`navbar relative mx-auto min-h-0 max-w-5xl rounded-full border px-2 py-1.5 backdrop-blur-2xl transition-all duration-500 motion-reduce:transition-none sm:px-4 ${
           scrolled
-            ? 'border-base-content/15 bg-base-100/85 shadow-xl'
-            : 'border-base-content/10 bg-base-100/60'
+            ? 'border-base-content/15 bg-base-100/80 shadow-[0_12px_40px_-12px] shadow-secondary/40'
+            : 'border-base-content/10 bg-base-100/50 shadow-lg shadow-black/5'
         }`}
       >
-        {/* Scroll progress line */}
+        {/* Gradient hairline along the top edge */}
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-secondary to-transparent"
+        />
+
+        {/* Scroll progress line with a glowing head */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden rounded-full">
           <span
             className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-secondary to-info"
             style={{ width: `${progress}%` }}
+          />
+          <span
+            className="absolute bottom-[-2px] size-2 -translate-x-1/2 rounded-full bg-info shadow-[0_0_10px_3px] shadow-info/70"
+            style={{ left: `${progress}%`, opacity: progress > 0.5 ? 1 : 0 }}
           />
         </div>
 
@@ -166,7 +184,7 @@ export default function Navbar() {
             <span className="relative grid size-9 place-items-center">
               <span
                 aria-hidden="true"
-                className="absolute -inset-1 rounded-full bg-gradient-to-br from-secondary to-info opacity-40 blur-md transition duration-300 group-hover:opacity-80"
+                className="absolute -inset-1 rounded-full bg-gradient-to-br from-secondary to-info opacity-40 blur-md transition duration-300 group-hover:opacity-90"
               />
               <span className="relative grid size-9 place-items-center rounded-full bg-gradient-to-br from-secondary to-info font-extrabold text-secondary-content ring-2 ring-white/30 transition duration-300 group-hover:rotate-12 group-hover:scale-110">
                 T
@@ -181,13 +199,33 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Center: links (tablet and up), with a sliding highlight */}
+        {/* Center on phones: the section you are reading */}
+        <div className="navbar-center md:hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={current.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-1.5 rounded-full border border-base-content/10 bg-base-200/60 px-3 py-1.5 text-xs font-semibold"
+            >
+              <NavIcon paths={current.icon} className="size-3.5 text-secondary" />
+              {current.label}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+
+        {/* Center: links (tablet and up), with a sliding highlight and a hover glow */}
         <nav className="navbar-center hidden md:flex" aria-label="Main">
-          <ul className="flex items-center gap-0.5 rounded-full border border-base-content/10 bg-base-200/60 p-1 text-sm">
+          <ul
+            onMouseLeave={() => setHover(null)}
+            className="flex items-center gap-0.5 rounded-full border border-base-content/10 bg-base-200/60 p-1 text-sm shadow-inner"
+          >
             {links.map((l) => {
               const isActive = active === l.id
               return (
-                <li key={l.id}>
+                <li key={l.id} onMouseEnter={() => setHover(l.id)}>
                   <Link
                     to={to(l.id)}
                     aria-current={isActive ? 'true' : undefined}
@@ -195,11 +233,18 @@ export default function Navbar() {
                       isActive ? 'text-secondary-content' : 'text-base-content/70 hover:text-base-content'
                     }`}
                   >
+                    {hover === l.id && !isActive && (
+                      <motion.span
+                        layoutId="nav-hover"
+                        transition={{ type: 'spring', stiffness: 500, damping: 38 }}
+                        className="absolute inset-0 rounded-full bg-base-content/10"
+                      />
+                    )}
                     {isActive && (
                       <motion.span
                         layoutId="nav-pill"
                         transition={{ type: 'spring', stiffness: 450, damping: 34 }}
-                        className="absolute inset-0 rounded-full bg-gradient-to-r from-secondary to-info shadow-lg shadow-secondary/30"
+                        className="absolute inset-0 rounded-full bg-gradient-to-r from-secondary to-info shadow-lg shadow-secondary/40"
                       />
                     )}
                     <NavIcon paths={l.icon} className="relative hidden size-3.5 xl:block" />
@@ -216,8 +261,15 @@ export default function Navbar() {
           <ThemeToggle />
 
           <Link
+            to="/resume"
+            className="btn btn-sm hidden gap-1 rounded-full border border-base-content/20 bg-base-100/60 transition duration-300 hover:-translate-y-0.5 hover:border-secondary hover:text-secondary xl:inline-flex"
+          >
+            Resume
+          </Link>
+
+          <Link
             to={to('contact')}
-            className="btn btn-sm hidden gap-1 rounded-full border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-secondary/40 lg:inline-flex"
+            className="nb-shimmer btn btn-sm hidden gap-1 rounded-full border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-secondary/40 lg:inline-flex"
           >
             Let&apos;s Talk <span aria-hidden="true">→</span>
           </Link>
@@ -230,15 +282,12 @@ export default function Navbar() {
             aria-label={open ? 'Close menu' : 'Open menu'}
             className="btn btn-ghost btn-circle md:hidden"
           >
-            {open ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
-            )}
+            {/* Three lines that morph into a cross */}
+            <span className="relative block h-3.5 w-5" aria-hidden="true">
+              <span className={`absolute left-0 h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${open ? 'top-1.5 rotate-45' : 'top-0'}`} />
+              <span className={`absolute left-0 top-1.5 h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${open ? 'scale-x-0 opacity-0' : ''}`} />
+              <span className={`absolute left-0 h-0.5 w-5 rounded-full bg-current transition-all duration-300 ${open ? 'top-1.5 -rotate-45' : 'top-3'}`} />
+            </span>
           </button>
         </div>
       </div>
@@ -247,8 +296,8 @@ export default function Navbar() {
       <div
         id="mobile-menu"
         aria-hidden={!open}
-        className={`absolute inset-x-3 top-full mx-auto mt-2 max-w-5xl rounded-2xl border border-base-content/10 bg-base-100/95 p-2 shadow-2xl backdrop-blur-xl transition duration-200 motion-reduce:transition-none sm:inset-x-4 md:hidden ${
-          open ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'
+        className={`absolute inset-x-3 top-full mx-auto mt-2 max-h-[calc(100dvh-6rem)] max-w-5xl overflow-y-auto rounded-3xl border border-base-content/10 bg-base-100/90 p-2.5 shadow-2xl shadow-secondary/20 backdrop-blur-2xl transition duration-300 motion-reduce:transition-none sm:inset-x-4 md:hidden ${
+          open ? 'visible translate-y-0 scale-100 opacity-100' : 'invisible -translate-y-3 scale-95 opacity-0'
         }`}
       >
         <ul className="grid grid-cols-2 gap-1.5">
@@ -258,13 +307,13 @@ export default function Navbar() {
               <li
                 key={l.id}
                 className={`transition duration-300 ${open ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
-                style={{ transitionDelay: open ? `${i * 35}ms` : '0ms' }}
+                style={{ transitionDelay: open ? `${i * 40}ms` : '0ms' }}
               >
                 <Link
                   to={to(l.id)}
                   onClick={() => setOpen(false)}
                   aria-current={isActive ? 'true' : undefined}
-                  className={`flex min-h-12 items-center gap-2.5 rounded-xl px-3 font-medium transition ${
+                  className={`flex min-h-12 items-center gap-2.5 rounded-2xl px-3 font-medium transition ${
                     isActive
                       ? 'bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30'
                       : 'bg-base-200/50 hover:bg-base-200 active:bg-base-200'
@@ -278,18 +327,29 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="mt-2 flex items-center justify-between rounded-xl bg-base-200/60 px-4 py-2">
+        <div className="mt-2 flex items-center justify-between rounded-2xl bg-base-200/60 px-4 py-2">
           <span className="text-sm font-medium">Theme</span>
           <ThemeToggle />
         </div>
 
         <Link
+          to="/resume"
+          onClick={() => setOpen(false)}
+          className="btn mt-2 w-full gap-2 rounded-2xl border border-base-content/15 bg-base-200/50"
+        >
+          <NavIcon paths={['M6 3h8l4 4v14H6z', 'M14 3v4h4M9 12h6M9 16h6']} className="size-4" />
+          Resume
+        </Link>
+
+        <Link
           to={to('contact')}
           onClick={() => setOpen(false)}
-          className="btn mt-2 w-full gap-1 rounded-xl border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30"
+          className="nb-shimmer btn mt-2 w-full gap-1 rounded-2xl border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30"
         >
           Let&apos;s Talk <span aria-hidden="true">→</span>
         </Link>
+
+        <SocialLinks className="mt-3 justify-center pb-1" />
       </div>
     </header>
   )

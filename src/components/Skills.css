@@ -8,6 +8,18 @@
   animation: skc-bob 5s ease-in-out infinite;
 }
 
+/* Each card uses its own accent colour in --acc */
+.skc-card {
+  --acc: var(--color-secondary);
+  --mx: 50%;
+  --my: 0%;
+}
+
+.skc-card:hover {
+  border-color: var(--acc);
+  box-shadow: 0 24px 50px -20px color-mix(in oklab, var(--acc) 45%, transparent);
+}
+
 /* Gradient hairline along the top of each card */
 .skc-card::before {
   content: '';
@@ -15,8 +27,24 @@
   inset: 0 1.5rem auto 1.5rem;
   height: 2px;
   border-radius: 9999px;
-  background: linear-gradient(90deg, transparent, var(--color-secondary), var(--color-info), transparent);
-  opacity: 0.8;
+  background: linear-gradient(90deg, transparent, var(--acc), transparent);
+  opacity: 0.85;
+}
+
+/* Soft spotlight that follows the mouse across the card */
+.skc-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(260px circle at var(--mx) var(--my), color-mix(in oklab, var(--acc) 16%, transparent), transparent 70%);
+}
+
+.skc-card:hover::after {
+  opacity: 1;
 }
 
 @media (prefers-reduced-motion: reduce) {
