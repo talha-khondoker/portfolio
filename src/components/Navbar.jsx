@@ -332,14 +332,14 @@ export default function Navbar() {
           <ThemeToggle />
         </div>
 
-        <Link
+        {/* <Link
           to="/resume"
           onClick={() => setOpen(false)}
           className="btn mt-2 w-full gap-2 rounded-2xl border border-base-content/15 bg-base-200/50"
         >
           <NavIcon paths={['M6 3h8l4 4v14H6z', 'M14 3v4h4M9 12h6M9 16h6']} className="size-4" />
           Resume
-        </Link>
+        </Link> */}
 
         <Link
           to={to('contact')}
