@@ -260,12 +260,12 @@ export default function Navbar() {
         <div className="navbar-end gap-2">
           <ThemeToggle />
 
-          <Link
+          {/* <Link
             to="/resume"
             className="btn btn-sm hidden gap-1 rounded-full border border-base-content/20 bg-base-100/60 transition duration-300 hover:-translate-y-0.5 hover:border-secondary hover:text-secondary xl:inline-flex"
           >
             Resume
-          </Link>
+          </Link> */}
 
           <Link
             to={to('contact')}
