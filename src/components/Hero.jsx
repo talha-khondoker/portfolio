@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } 
 import { gsap } from '../lib/gsap'
 import { codingProfiles, skills } from '../Data'
 import SocialLinks from './SocialLinks'
+import { resumeLinkProps } from '../resumeLink'
 import './Hero.css'
 
 const slug = (text) => text.toLowerCase().replace(/[^a-z]+/g, '_').replace(/^_|_$/g, '')
@@ -22,15 +23,23 @@ function Highlighted({ text }) {
 }
 
 const roles = [
-  { text: 'Full Stack Web Developer', icon: ['M12 2 2 7l10 5 10-5-10-5z', 'M2 17l10 5 10-5', 'M2 12l10 5 10-5'] },
+  { text: 'Junior Full-Stack Developer', icon: ['M12 2 2 7l10 5 10-5-10-5z', 'M2 17l10 5 10-5', 'M2 12l10 5 10-5'] },
   {
     text: 'Competitive Programmer',
     icon: ['M7 4h10v5a5 5 0 0 1-10 0z', 'M17 5h3v2a3 3 0 0 1-3 3', 'M7 5H4v2a3 3 0 0 0 3 3', 'M12 14v4', 'M8 21h8'],
   },
-  { text: 'Backend Engineer: Python & FastAPI', icon: ['M3 4h18v6H3z', 'M3 14h18v6H3z', 'M7 7h.01', 'M7 17h.01'] },
+  { text: 'Backend Developer: Python & FastAPI', icon: ['M3 4h18v6H3z', 'M3 14h18v6H3z', 'M7 7h.01', 'M7 17h.01'] },
   { text: 'Problem Solver', icon: ['M9 18h6', 'M10 21h4', 'M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z'] },
   { text: 'Mathematics Student', icon: ['M18 4H6l7 8-7 8h12'] },
-  { text: 'Math Tutor', icon: ['M4 5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2z', 'M4 19a2 2 0 0 0 2 2h14'] },
+  {
+    text: 'Ready to Explore',
+    icon: [
+      'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z',
+      'm12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z',
+      'M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0',
+      'M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5',
+    ],
+  },
 ]
 
 // Roles that fade in and out under the name
@@ -489,8 +498,8 @@ export default function Hero() {
           </h1>
 
           <p data-hero className="mb-5 mt-6 max-w-md text-base-content/70">
-            Full stack web developer working with Python, FastAPI and React. Mathematics student in
-            Jashore, Bangladesh, looking for junior remote backend and full-stack roles.
+            Junior full-stack developer working with Python, FastAPI and React. Mathematics student in
+            Jashore, Bangladesh, ready to explore and looking for junior or internship roles.
           </p>
 
           {/* Competitive programming stats */}
@@ -543,8 +552,7 @@ export default function Hero() {
             </Magnetic>
             <Magnetic>
             <a
-              href="/Talha_Khondoker.pdf"
-              download="Talha_Khondoker_Resume.pdf"
+              {...resumeLinkProps}
               className="btn gap-2 rounded-full border border-base-content/20 bg-base-100/60 px-6 backdrop-blur transition duration-300 hover:-translate-y-0.5 hover:border-secondary hover:text-secondary"
             >
               Download Resume ↓

@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { codingProfiles, contactInfo, education, experience, projects, skills, socials } from '../Data'
+import { codingProfiles, contactInfo, education, projects, skills, socials, softSkills } from '../Data'
+import { resumeLinkProps } from '../resumeLink'
 import './Resume.css'
 
-const FILE = '/Talha_Khondoker.pdf'
-const DOWNLOAD_NAME = 'Talha_Khondoker_Resume.pdf'
 const PORTFOLIO = 'https://talha-khondoker-portfolio.netlify.app/'
 
 const stroke = {
@@ -67,7 +66,7 @@ export default function Resume() {
     link('GitHub') && { text: pretty(link('GitHub')), href: link('GitHub') },
   ].filter(Boolean)
 
-  const shownProjects = projects.slice(0, 3)
+  const shownProjects = projects.slice(0, 2)
 
   return (
     <motion.section
@@ -106,7 +105,7 @@ export default function Resume() {
               </svg>
               Print / Save as PDF
             </button>
-            <a href={FILE} download={DOWNLOAD_NAME} className={ghost}>
+            <a {...resumeLinkProps} className={ghost}>
               <svg viewBox="0 0 24 24" className="size-4" {...stroke} aria-hidden="true">
                 <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />
               </svg>
@@ -141,7 +140,7 @@ export default function Resume() {
                 <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
                   Md Mushfiqur Talha Khondoker
                 </h2>
-                <p className="mt-1 text-base font-semibold text-teal-700">Full Stack Web Developer</p>
+                <p className="mt-1 text-base font-semibold text-teal-700">Junior Full-Stack Developer</p>
                 <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600">
                   {contacts.map((c) => (
                     <li key={c.text}>
@@ -157,12 +156,12 @@ export default function Resume() {
                 </ul>
               </div>
 
-              <Section title="Summary">
+              <Section title="Career objective">
                 <p>
-                  Full stack web developer working with Python, FastAPI and React, and a mathematics student in
-                  Jashore, Bangladesh. I build REST APIs with JWT authentication and role-based access, and the
-                  interfaces on top of them. Competitive programmer in C++ and private mathematics tutor. Looking
-                  for junior remote backend and full-stack roles.
+                  Junior Full-Stack Developer proficient in Python, FastAPI and ReactJS, with expertise in SQL
+                  databases and C/C++ problem solving. Built secure, data-driven web applications with JWT
+                  authentication and role-based access control. Passionate about delivering reliable APIs and
+                  intuitive user interfaces.
                 </p>
               </Section>
 
@@ -175,6 +174,10 @@ export default function Resume() {
                     </div>
                   ))}
                 </dl>
+              </Section>
+
+              <Section title="Soft skills">
+                <p>{softSkills.join(', ')}</p>
               </Section>
 
               <Section title="Projects">
@@ -204,25 +207,6 @@ export default function Resume() {
                 </ul>
               </Section>
 
-              <Section title="Experience">
-                <ul className="space-y-3">
-                  {experience.map((job) => (
-                    <li key={job.role}>
-                      <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                        <p className="font-bold text-slate-900">
-                          {job.role} <span className="font-normal text-slate-600">· {job.place}</span>
-                        </p>
-                        <p className="text-xs text-slate-500">{job.period}</p>
-                      </div>
-                      <ul className="mt-1 list-disc space-y-0.5 pl-5">
-                        {job.points.map((point) => (
-                          <li key={point}>{point}</li>
-                        ))}
-                      </ul>
-                    </li>
-                  ))}
-                </ul>
-              </Section>
 
               <Section title="Education">
                 <ul className="space-y-2.5">

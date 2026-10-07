@@ -9,7 +9,7 @@ const links = [
   { label: 'Home', id: 'home' },
   { label: 'About', id: 'about' },
   { label: 'Skills', id: 'skills' },
-  { label: 'Experience', id: 'experience' },
+  { label: 'Education', id: 'education' },
   { label: 'Projects', id: 'projects' },
   { label: 'Coding', id: 'problem-solving' },
   { label: 'Contact', id: 'contact' },
@@ -45,6 +45,7 @@ const CIRCLE = 2 * Math.PI * 20
 function BackToTop() {
   const [progress, setProgress] = useState(0)
   const [visible, setVisible] = useState(false)
+  const [launching, setLaunching] = useState(false)
 
   useEffect(() => {
     const onScroll = () => {
@@ -61,7 +62,11 @@ function BackToTop() {
   return (
     <button
       type="button"
-      onClick={goTop}
+      onClick={() => {
+        goTop()
+        setLaunching(true)
+        setTimeout(() => setLaunching(false), 900)
+      }}
       aria-label="Back to top"
       title="Back to top"
       tabIndex={visible ? 0 : -1}
@@ -89,18 +94,23 @@ function BackToTop() {
           strokeDashoffset={CIRCLE * (1 - progress)}
         />
       </svg>
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="relative size-5 text-secondary transition duration-300 group-hover:-translate-y-0.5"
-        aria-hidden="true"
-      >
-        <path d="M12 19V5M5 12l7-7 7 7" />
-      </svg>
+      <span className={`relative grid place-items-center ${launching ? 'ft-launch' : ''}`}>
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="size-5 -rotate-45 text-secondary transition duration-300 group-hover:scale-110"
+          aria-hidden="true"
+        >
+          <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+          <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+          <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+          <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+        </svg>
+      </span>
     </button>
   )
 }
@@ -150,6 +160,28 @@ function Ribbon() {
   )
 }
 
+const roles = ['Junior Full-Stack Developer', 'Competitive Programmer', 'Problem Solver', 'Quick Learner', 'Ready to Explore']
+
+// Big outlined roles that scroll the other way
+function RoleRibbon() {
+  const items = [...roles, ...roles]
+  return (
+    <div
+      aria-hidden="true"
+      className="relative mt-14 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+    >
+      <div className="ft-marquee-rev flex w-max items-center">
+        {items.map((item, i) => (
+          <span key={i} className="flex items-center whitespace-nowrap">
+            <span className="ft-outline px-6 text-4xl font-extrabold tracking-tight sm:px-10 sm:text-6xl">{item}</span>
+            <span className="bg-gradient-to-r from-secondary to-info bg-clip-text text-3xl text-transparent sm:text-5xl">✦</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function Footer() {
   return (
     <>
@@ -180,7 +212,7 @@ export default function Footer() {
                   <p className="text-xs font-semibold uppercase tracking-[0.25em] text-secondary">
                     Open to junior remote roles
                   </p>
-                  <h2 className="mt-3 text-3xl font-extrabold leading-tight md:text-4xl">
+                  <h2 className="mt-3 text-3xl font-extrabold leading-tight md:text-5xl">
                     Have a project or role in mind?{' '}
                     <span className="bg-gradient-to-r from-secondary to-info bg-clip-text text-transparent">
                       Let&apos;s talk.
@@ -190,17 +222,38 @@ export default function Footer() {
                     I build reliable APIs and the interfaces on top of them. Send me a message and I&apos;ll get
                     back to you.
                   </p>
+
+                  <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
+                    <Link
+                      to={to('contact')}
+                      className="btn rounded-full border-0 bg-gradient-to-r from-secondary to-info px-7 text-secondary-content shadow-lg shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-secondary/40"
+                    >
+                      Let&apos;s Talk <span aria-hidden="true">→</span>
+                    </Link>
+                    <CopyEmail />
+                  </div>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-3">
-                  <Link
-                    to={to('contact')}
-                    className="btn rounded-full border-0 bg-gradient-to-r from-secondary to-info px-7 text-secondary-content shadow-lg shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-secondary/40"
-                  >
-                    Let&apos;s Talk <span aria-hidden="true">→</span>
-                  </Link>
-                  <CopyEmail />
-                </div>
+                {/* Rotating "say hello" badge */}
+                <Link
+                  to={to('contact')}
+                  aria-label="Say hello, go to the contact form"
+                  className="group relative hidden size-44 shrink-0 place-items-center md:grid"
+                >
+                  <svg viewBox="0 0 160 160" className="ft-rotate absolute inset-0 size-full" aria-hidden="true">
+                    <defs>
+                      <path id="ft-circle" d="M80,80 m-62,0 a62,62 0 1,1 124,0 a62,62 0 1,1 -124,0" />
+                    </defs>
+                    <text className="fill-current text-[12px] font-bold uppercase text-base-content/70">
+                      <textPath href="#ft-circle" textLength="384" lengthAdjust="spacing">
+                        Say hello • Say hello • Say hello •{' '}
+                      </textPath>
+                    </text>
+                  </svg>
+                  <span className="grid size-20 place-items-center rounded-full bg-gradient-to-br from-secondary to-info text-3xl text-secondary-content shadow-xl shadow-secondary/40 transition duration-300 group-hover:scale-110 group-hover:-rotate-12">
+                    ↗
+                  </span>
+                </Link>
               </div>
             </div>
           </div>
@@ -219,14 +272,13 @@ export default function Footer() {
                 <span className="text-left leading-tight">
                   <span className="block font-extrabold">Md Mushfiqur Talha Khondoker</span>
                   <span className="block bg-gradient-to-r from-secondary to-info bg-clip-text text-sm font-semibold text-transparent">
-                    Full Stack Web Developer
+                    Junior Full-Stack Developer
                   </span>
                 </span>
               </Link>
 
               <p className="mt-4 max-w-xs text-sm text-base-content/70">
-                Python, FastAPI and React. Mathematics student, competitive programmer and private tutor in
-                Jashore, Bangladesh.
+                Python, FastAPI and React. Mathematics student and competitive programmer in Jashore, Bangladesh, ready to explore my first developer role.
               </p>
 
               <SocialLinks className="mt-5 justify-center md:justify-start" />
@@ -307,6 +359,8 @@ export default function Footer() {
             </button>
           </div>
         </div>
+
+        <RoleRibbon />
 
         {/* Giant outlined name, cropped at the bottom edge */}
         <div

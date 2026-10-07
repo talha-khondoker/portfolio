@@ -9,7 +9,7 @@ const links = [
   { label: 'Home', id: 'home', icon: ['M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z'] },
   { label: 'About', id: 'about', icon: ['M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2', 'M12 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z'] },
   { label: 'Skills', id: 'skills', icon: ['M12 2 2 7l10 5 10-5-10-5z', 'M2 17l10 5 10-5', 'M2 12l10 5 10-5'] },
-  { label: 'Experience', id: 'experience', icon: ['M3 7h18v13H3z', 'M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'] },
+  { label: 'Education', id: 'education', icon: ['M22 9 12 4 2 9l10 5 10-5z', 'M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5'] },
   { label: 'Projects', id: 'projects', icon: ['M4 4h7v7H4z', 'M13 4h7v7h-7z', 'M4 13h7v7H4z', 'M13 13h7v7h-7z'] },
   { label: 'Coding', id: 'problem-solving', icon: ['M16 18l6-6-6-6', 'M8 6l-6 6 6 6'] },
   { label: 'Contact', id: 'contact', icon: ['M3 5h18v14H3z', 'M3 7l9 6 9-6'] },
@@ -193,7 +193,7 @@ export default function Navbar() {
             <span className="hidden leading-tight sm:block">
               <span className="block text-sm font-extrabold tracking-[0.2em]">TALHA</span>
               <span className="hidden bg-gradient-to-r from-secondary to-info bg-clip-text text-xs font-semibold text-transparent lg:block">
-                Full Stack Developer
+                Junior Full-Stack Developer
               </span>
             </span>
           </Link>
@@ -260,13 +260,6 @@ export default function Navbar() {
         <div className="navbar-end gap-2">
           <ThemeToggle />
 
-          {/* <Link
-            to="/resume"
-            className="btn btn-sm hidden gap-1 rounded-full border border-base-content/20 bg-base-100/60 transition duration-300 hover:-translate-y-0.5 hover:border-secondary hover:text-secondary xl:inline-flex"
-          >
-            Resume
-          </Link> */}
-
           <Link
             to={to('contact')}
             className="nb-shimmer btn btn-sm hidden gap-1 rounded-full border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-secondary/40 lg:inline-flex"
@@ -332,14 +325,6 @@ export default function Navbar() {
           <ThemeToggle />
         </div>
 
-        {/* <Link
-          to="/resume"
-          onClick={() => setOpen(false)}
-          className="btn mt-2 w-full gap-2 rounded-2xl border border-base-content/15 bg-base-200/50"
-        >
-          <NavIcon paths={['M6 3h8l4 4v14H6z', 'M14 3v4h4M9 12h6M9 16h6']} className="size-4" />
-          Resume
-        </Link> */}
 
         <Link
           to={to('contact')}

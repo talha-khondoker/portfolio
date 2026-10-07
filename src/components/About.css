@@ -12,3 +12,27 @@
     animation: none;
   }
 }
+
+@keyframes ab-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Spinning gradient used for the photo border */
+.ab-spin {
+  background: conic-gradient(
+    from 0deg,
+    var(--color-secondary),
+    var(--color-info),
+    var(--color-accent),
+    var(--color-secondary)
+  );
+  animation: ab-spin 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ab-spin {
+    animation-duration: 30s;
+  }
+}

@@ -55,3 +55,43 @@
     animation: none;
   }
 }
+
+@keyframes ft-marquee-rev {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes ft-launch {
+  0% { transform: translateY(0); opacity: 1; }
+  55% { transform: translateY(-46px); opacity: 0; }
+  56% { transform: translateY(34px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.ft-marquee-rev {
+  animation: ft-marquee-rev 60s linear infinite;
+}
+
+.ft-rotate {
+  animation: ft-spin-plain 20s linear infinite;
+}
+
+@keyframes ft-spin-plain {
+  to { transform: rotate(360deg); }
+}
+
+.ft-launch {
+  animation: ft-launch 0.9s ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-marquee-rev {
+    animation-duration: 180s;
+  }
+  .ft-rotate {
+    animation-duration: 60s;
+  }
+  .ft-launch {
+    animation: none;
+  }
+}

@@ -1,0 +1,24 @@
+/* Soft spotlight that follows the mouse across a card. Add the class "spot" and onPointerMove={spotlight}. */
+.spot {
+  --mx: 50%;
+  --my: 0%;
+}
+
+.spot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(
+    280px circle at var(--mx) var(--my),
+    color-mix(in oklab, var(--acc, var(--color-secondary)) 16%, transparent),
+    transparent 70%
+  );
+}
+
+.spot:hover::after {
+  opacity: 1;
+}

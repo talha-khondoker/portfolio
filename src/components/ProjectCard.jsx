@@ -1,6 +1,10 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useMotionValue, useReducedMotion, useSpring } from 'framer-motion'
 import ProjectImage from './ProjectImage'
 import Reveal from './Reveal'
+import { spotlight } from '../lib/spotlight'
+import './Spot.css'
 
 const icon = {
   fill: 'none',
@@ -10,21 +14,100 @@ const icon = {
   strokeLinejoin: 'round',
 }
 
-// One project card, used on the home page and on the all-projects page
-export default function ProjectCard({ project, index = 0, delay = 0 }) {
-  const shown = project.stack.slice(0, 4)
+// Logo for each technology tag. Tags without a logo (JWT, REST API) show as text.
+const logos = {
+  FastAPI: 'fastapi',
+  SQLAlchemy: 'sqlalchemy',
+  SQLite: 'sqlite',
+  React: 'react',
+  Python: 'python',
+  MySQL: 'mysql',
+  'Tailwind CSS': 'tailwindcss',
+  JavaScript: 'javascript',
+  HTML: 'html5',
+  Docker: 'docker',
+  Git: 'git',
+  GitHub: 'github',
+  Supabase: 'supabase',
+  Netlify: 'netlify',
+  Bootstrap: 'bootstrap',
+  'C++': 'cplusplus',
+  C: 'c',
+}
+
+function TechTag({ tag }) {
+  const [failed, setFailed] = useState(false)
+  const slug = logos[tag]
+
+  if (!slug || failed) {
+    return (
+      <span className="grid h-8 place-items-center rounded-lg border border-base-300 bg-base-200/60 px-2.5 text-xs font-semibold text-base-content/80">
+        {tag}
+      </span>
+    )
+  }
+
+  return (
+    <span
+      title={tag}
+      className="grid size-8 place-items-center rounded-lg bg-white p-1.5 shadow-sm ring-1 ring-black/5 transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-secondary/30"
+    >
+      <img
+        src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${slug}/${slug}-original.svg`}
+        alt={tag}
+        loading="lazy"
+        draggable="false"
+        onError={() => setFailed(true)}
+        className="size-full object-contain"
+      />
+    </span>
+  )
+}
+
+// One project card, used on the home page and on the all-projects page.
+// "wide" puts the image beside the text, for the featured project.
+export default function ProjectCard({ project, index = 0, delay = 0, wide = false, className = '' }) {
+  const shown = project.stack.slice(0, wide ? 7 : 5)
   const extra = project.stack.length - shown.length
   const to = `/projects/${project.slug}`
+  const reduce = useReducedMotion()
+
+  // Gentle 3D tilt that follows the mouse (mouse only)
+  const rx = useMotionValue(0)
+  const ry = useMotionValue(0)
+  const tiltX = useSpring(rx, { stiffness: 160, damping: 20 })
+  const tiltY = useSpring(ry, { stiffness: 160, damping: 20 })
+
+  const onMove = (e) => {
+    spotlight(e)
+    if (e.pointerType !== 'mouse' || reduce) return
+    const r = e.currentTarget.getBoundingClientRect()
+    ry.set(((e.clientX - r.left) / r.width - 0.5) * 6)
+    rx.set(-((e.clientY - r.top) / r.height - 0.5) * 6)
+  }
+  const onLeave = () => {
+    rx.set(0)
+    ry.set(0)
+  }
 
   return (
     <Reveal
       as="article"
       delay={delay}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-base-300 bg-base-100/80 backdrop-blur transition duration-300 hover:-translate-y-1.5 hover:border-secondary hover:shadow-2xl hover:shadow-secondary/15"
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+      style={{ rotateX: tiltX, rotateY: tiltY, transformPerspective: 1100 }}
+      className={`spot group relative flex flex-col overflow-hidden rounded-2xl border border-base-300 bg-base-100/80 backdrop-blur transition-[border-color,box-shadow,translate] duration-300 hover:-translate-y-1.5 hover:border-secondary hover:shadow-2xl hover:shadow-secondary/20 ${
+        wide ? 'lg:flex-row' : ''
+      } ${className}`}
     >
       {/* Image */}
-      <Link to={to} aria-label={`${project.title}, view details`} className="relative block overflow-hidden">
-        <ProjectImage project={project} className="aspect-video w-full" />
+      <Link
+        to={to}
+        aria-label={`${project.title}, view details`}
+        className={`relative block overflow-hidden ${wide ? 'lg:w-[55%] lg:shrink-0' : ''}`}
+      >
+        <ProjectImage project={project} className={`aspect-video w-full ${wide ? 'lg:aspect-auto lg:h-full lg:min-h-[19rem]' : ''}`} />
 
         <span
           aria-hidden="true"
@@ -36,7 +119,10 @@ export default function ProjectCard({ project, index = 0, delay = 0 }) {
         </span>
 
         <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-white/20 bg-black/40 px-2.5 py-0.5 text-xs font-semibold text-white backdrop-blur">
-          <span className={`size-1.5 rounded-full ${project.live ? 'bg-green-400' : 'bg-amber-300'}`} />
+          <span className="relative flex size-1.5">
+            {project.live && <span className="absolute inline-flex size-full animate-ping rounded-full bg-green-400 opacity-70" />}
+            <span className={`relative inline-flex size-1.5 rounded-full ${project.live ? 'bg-green-400' : 'bg-amber-300'}`} />
+          </span>
           {project.live ? 'Live' : 'Code only'}
         </span>
 
@@ -49,34 +135,49 @@ export default function ProjectCard({ project, index = 0, delay = 0 }) {
       </Link>
 
       {/* Body */}
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="text-xl font-extrabold leading-snug transition-colors duration-300 group-hover:text-secondary">
+      <div className={`relative flex flex-1 flex-col p-6 ${wide ? 'lg:justify-center lg:p-8' : ''}`}>
+        {wide && (
+          <span className="mb-3 inline-flex w-fit items-center gap-2 rounded-full bg-gradient-to-r from-secondary to-info px-3 py-1 text-xs font-bold uppercase tracking-wider text-secondary-content shadow-md shadow-secondary/30">
+            <svg viewBox="0 0 24 24" className="size-3.5" {...icon} aria-hidden="true">
+              <path d="m12 3 2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z" />
+            </svg>
+            Featured project
+          </span>
+        )}
+
+        <h3
+          className={`font-extrabold leading-snug transition-colors duration-300 group-hover:text-secondary ${
+            wide ? 'text-2xl lg:text-3xl' : 'text-xl'
+          }`}
+        >
           <Link to={to}>{project.title}</Link>
         </h3>
-        <p className="mt-2 line-clamp-3 flex-1 text-sm text-base-content/70">{project.summary}</p>
+        <p className={`mt-2 flex-1 text-sm text-base-content/70 ${wide ? 'lg:text-base' : 'line-clamp-3'}`}>
+          {project.summary}
+        </p>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-5 flex flex-wrap items-center gap-2">
           {shown.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-base-300 bg-base-200/60 px-3 py-0.5 text-xs text-base-content/80"
-            >
-              {tag}
-            </span>
+            <TechTag key={tag} tag={tag} />
           ))}
           {extra > 0 && (
-            <span className="rounded-full bg-secondary/10 px-3 py-0.5 text-xs font-semibold text-secondary">
+            <span className="grid h-8 place-items-center rounded-lg bg-secondary/10 px-2.5 text-xs font-semibold text-secondary">
               +{extra}
             </span>
           )}
         </div>
 
-        <div className="mt-5 flex items-center gap-2">
+        <div className="mt-6 flex items-center gap-2">
           <Link
             to={to}
-            className="btn btn-sm flex-1 gap-2 rounded-full border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30 transition duration-300 hover:shadow-lg hover:shadow-secondary/40"
+            className={`btn btn-sm gap-2 rounded-full border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-md shadow-secondary/30 transition duration-300 hover:shadow-lg hover:shadow-secondary/40 ${
+              wide ? 'lg:btn-md' : 'flex-1'
+            }`}
           >
-            View Details <span aria-hidden="true">→</span>
+            View Details{' '}
+            <span aria-hidden="true" className="transition duration-300 group-hover:translate-x-1">
+              →
+            </span>
           </Link>
 
           {project.live && (

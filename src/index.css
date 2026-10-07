@@ -63,3 +63,33 @@
 html {
   scroll-padding-top: 6rem;
 }
+
+/* Skills solar system: each ring spins, each icon counter-spins so it stays upright */
+@keyframes orbit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.orbit-ring {
+  animation: orbit-spin var(--orbit-duration) linear infinite;
+  animation-direction: var(--orbit-dir);
+}
+
+.orbit-chip {
+  animation: orbit-spin var(--orbit-duration) linear infinite;
+  animation-direction: var(--orbit-dir-inv);
+}
+
+/* Hover (or touch) the system to pause it */
+.orbit-system:hover .orbit-ring,
+.orbit-system:hover .orbit-chip {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-ring,
+  .orbit-chip {
+    animation: none;
+  }
+}

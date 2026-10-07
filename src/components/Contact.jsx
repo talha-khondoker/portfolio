@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { contactInfo } from '../Data'
 import Reveal from './Reveal'
 
@@ -118,6 +119,75 @@ function CopyButton({ text, label }) {
   )
 }
 
+const emailOk = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+
+const tick = (
+  <svg viewBox="0 0 24 24" className="size-4" {...line} strokeWidth="2.5" aria-hidden="true">
+    <path d="m5 12 5 5 9-10" />
+  </svg>
+)
+
+const fieldIcons = {
+  user: (
+    <svg viewBox="0 0 24 24" className="size-4" {...line} aria-hidden="true">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1" />
+    </svg>
+  ),
+  mail: (
+    <svg viewBox="0 0 24 24" className="size-4" {...line} aria-hidden="true">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </svg>
+  ),
+  tag: (
+    <svg viewBox="0 0 24 24" className="size-4" {...line} aria-hidden="true">
+      <path d="M3 12V4h8l10 10-8 8z" />
+      <path d="M7.5 8h.01" />
+    </svg>
+  ),
+}
+
+// Input with an icon on the left and a green tick on the right when the value looks right
+function Input({ icon, valid, className = '', ...props }) {
+  return (
+    <span className="group relative block">
+      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base-content/40 transition-colors group-focus-within:text-secondary">
+        {icon}
+      </span>
+      <input {...props} className={`${className} pl-11 pr-10`} />
+      {valid && (
+        <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-success">{tick}</span>
+      )}
+    </span>
+  )
+}
+
+// Little burst of coloured dots when the message is sent
+const dots = Array.from({ length: 18 }, (_, i) => ({
+  angle: (i / 18) * Math.PI * 2,
+  dist: 70 + (i % 4) * 16,
+  size: 6 + (i % 3) * 2,
+  color: ['bg-secondary', 'bg-info', 'bg-accent', 'bg-success'][i % 4],
+}))
+
+function Burst() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-[38%]">
+      {dots.map((d, i) => (
+        <motion.span
+          key={i}
+          initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+          animate={{ x: Math.cos(d.angle) * d.dist, y: Math.sin(d.angle) * d.dist, opacity: 0, scale: 0.4 }}
+          transition={{ duration: 0.9, ease: 'easeOut', delay: 0.15 }}
+          className={`absolute rounded-full ${d.color}`}
+          style={{ width: d.size, height: d.size }}
+        />
+      ))}
+    </div>
+  )
+}
+
 const field =
   'w-full rounded-xl border border-base-300 bg-base-200/60 px-4 py-3 text-sm outline-none transition placeholder:text-base-content/40 focus:border-secondary focus:bg-base-100 focus:ring-2 focus:ring-secondary/30'
 
@@ -194,6 +264,33 @@ export default function Contact() {
               </Reveal>
             ))}
           </ul>
+
+          {/* Where I am */}
+          <Reveal delay={0.2} className="mt-6">
+            <div className="relative overflow-hidden rounded-2xl border border-base-300 bg-base-100/80 p-5 backdrop-blur">
+              <div
+                aria-hidden="true"
+                className="absolute inset-0 opacity-70 [background-image:radial-gradient(var(--color-base-300)_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(circle_at_20%_50%,black_20%,transparent_75%)]"
+              />
+              <div className="relative flex items-center gap-5">
+                <span className="relative grid size-16 shrink-0 place-items-center">
+                  <span className="absolute size-full animate-ping rounded-full bg-secondary/25" />
+                  <span className="absolute size-11 rounded-full bg-secondary/20" />
+                  <span className="relative grid size-9 place-items-center rounded-full bg-gradient-to-br from-secondary to-info text-secondary-content shadow-lg shadow-secondary/40">
+                    <svg viewBox="0 0 24 24" className="size-5" {...line} aria-hidden="true">
+                      <path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z" />
+                      <circle cx="12" cy="10" r="2.5" />
+                    </svg>
+                  </span>
+                </span>
+                <div>
+                  <p className="text-xs uppercase tracking-widest text-base-content/60">Based in</p>
+                  <p className="text-lg font-extrabold">Jashore, Bangladesh</p>
+                  <p className="text-sm text-base-content/70">Bangladesh Standard Time, UTC+6</p>
+                </div>
+              </div>
+            </div>
+          </Reveal>
         </Reveal>
 
         {/* Right: form */}
@@ -205,26 +302,60 @@ export default function Contact() {
             >
               <span aria-hidden="true" className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-secondary/15 blur-3xl" />
 
-              <div className="relative">
-                <h3 className="text-xl font-extrabold">Send me a message</h3>
-                <p className="mt-1 text-sm text-base-content/70">I read every message.</p>
+              <div className="relative flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-xl font-extrabold">Send me a message</h3>
+                  <p className="mt-1 text-sm text-base-content/70">I read every message.</p>
+                </div>
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-secondary to-info text-secondary-content shadow-lg shadow-secondary/30">
+                  {fieldIcons.mail}
+                </span>
               </div>
 
               <div className="relative grid gap-4 sm:grid-cols-2">
                 <label className="block">
                   <span className="mb-1.5 block text-sm font-medium">Your name</span>
-                  <input name="name" value={form.name} onChange={update} required placeholder="Your name" className={field} />
+                  <Input
+                    name="name"
+                    value={form.name}
+                    onChange={update}
+                    required
+                    autoComplete="name"
+                    placeholder="Your name"
+                    icon={fieldIcons.user}
+                    valid={form.name.trim().length >= 2}
+                    className={field}
+                  />
                 </label>
                 <label className="block">
                   <span className="mb-1.5 block text-sm font-medium">Your email</span>
-                  <input name="email" type="email" value={form.email} onChange={update} required placeholder="you@example.com" className={field} />
+                  <Input
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={update}
+                    required
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    icon={fieldIcons.mail}
+                    valid={emailOk(form.email)}
+                    className={field}
+                  />
                 </label>
               </div>
 
               <div className="relative">
                 <label className="block">
                   <span className="mb-1.5 block text-sm font-medium">Subject</span>
-                  <input name="project" value={form.project} onChange={update} placeholder="What's this about?" className={field} />
+                  <Input
+                    name="project"
+                    value={form.project}
+                    onChange={update}
+                    placeholder="What's this about?"
+                    icon={fieldIcons.tag}
+                    valid={form.project.trim().length >= 3}
+                    className={field}
+                  />
                 </label>
                 <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="Quick subjects">
                   {topics.map((t) => (
@@ -248,7 +379,9 @@ export default function Contact() {
               <label className="relative block">
                 <span className="mb-1.5 flex items-center justify-between text-sm font-medium">
                   Message
-                  <span className="text-xs font-normal text-base-content/50">{form.message.length} characters</span>
+                  <span className={`text-xs font-normal ${form.message.length > 0 ? 'text-secondary' : 'text-base-content/50'}`}>
+                    {form.message.length} characters
+                  </span>
                 </span>
                 <textarea
                   name="message"
@@ -263,7 +396,7 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="btn group relative w-full gap-2 rounded-xl border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-lg shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-secondary/40"
+                className="nb-shimmer btn group relative w-full gap-2 rounded-xl border-0 bg-gradient-to-r from-secondary to-info text-secondary-content shadow-lg shadow-secondary/30 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-secondary/40"
               >
                 Send message
                 <span aria-hidden="true" className="transition duration-300 group-hover:translate-x-1">
@@ -271,11 +404,63 @@ export default function Contact() {
                 </span>
               </button>
 
-              <p className="relative text-xs text-base-content/60" aria-live="polite">
-                {sent
-                  ? `Your email app should be opening now. If nothing happens, write to ${EMAIL} directly.`
-                  : 'This opens your email app with the message filled in, so no backend is needed.'}
+              <p className="relative text-xs text-base-content/60">
+                This opens your email app with the message filled in, so no backend is needed.
               </p>
+
+              {/* Success */}
+              <AnimatePresence>
+                {sent && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="absolute inset-0 z-10 grid place-items-center bg-base-100/95 p-8 text-center backdrop-blur"
+                    role="status"
+                  >
+                    <Burst />
+                    <div>
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: 'spring', stiffness: 260, damping: 16, delay: 0.1 }}
+                        className="mx-auto grid size-20 place-items-center rounded-full bg-gradient-to-br from-secondary to-info text-secondary-content shadow-xl shadow-secondary/40"
+                      >
+                        <svg viewBox="0 0 24 24" className="size-9" {...line} strokeWidth="2.5" aria-hidden="true">
+                          <motion.path
+                            d="m5 12 5 5 9-10"
+                            initial={{ pathLength: 0 }}
+                            animate={{ pathLength: 1 }}
+                            transition={{ duration: 0.5, delay: 0.35 }}
+                          />
+                        </svg>
+                      </motion.span>
+                      <h3 className="mt-5 text-2xl font-extrabold">Thank you!</h3>
+                      <p className="mx-auto mt-2 max-w-xs text-sm text-base-content/70">
+                        Your email app should be opening now. If nothing happens, write to{' '}
+                        <a href={`mailto:${EMAIL}`} className="font-semibold text-secondary">
+                          {EMAIL}
+                        </a>{' '}
+                        directly.
+                      </p>
+                      <div className="mt-6 flex items-center justify-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSent(false)
+                            setForm({ name: '', email: '', project: '', message: '' })
+                          }}
+                          className="btn btn-sm rounded-full border-0 bg-gradient-to-r from-secondary to-info text-secondary-content"
+                        >
+                          Write another message
+                        </button>
+                        <CopyButton text={EMAIL} label="email" />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </form>
           </div>
         </Reveal>
